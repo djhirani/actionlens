@@ -134,7 +134,7 @@ Codex was the primary engineering collaborator throughout OpenAI Build Week. In 
 
 Primary Codex thread ID: `019f72a7-65bd-7071-8682-10b3b216d4af`
 
-Codex `/feedback` session ID: **PENDING — the owner must run `/feedback` in the primary thread and paste the exact returned ID here, in Devpost, and in private submission notes.**
+Codex `/feedback` Thread ID: `019f72a7-65bd-7071-8682-10b3b216d4af`
 
 The human owner made the central product decisions: deterministic proof-link verification over model confidence, refusal of unsupported deadlines, explicit human confirmation before persistence and closure, local-first minimal storage, and cutting voice, OCR, notifications, provider routing, accounts, and cloud sync to protect the core proof loop.
 
