@@ -1,0 +1,135 @@
+"use client";
+import { useState } from "react";
+import { ActionCard } from "@/components/action-card";
+import { actionRepository } from "@/lib/db";
+import { ActionItemSchema, type ActionItem } from "@/lib/schemas";
+import { getTimeContext } from "@/lib/time-context";
+
+export function ActionCapture() {
+  const [instruction, setInstruction] = useState("");
+  const [draft, setDraft] = useState<ActionItem | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [state, setState] = useState<"idle" | "loading" | "saved">("idle");
+  const [error, setError] = useState<string | null>(null);
+  async function prepare() {
+    setState("loading");
+    setError(null);
+    setDraft(null);
+    try {
+      const response = await fetch("/api/interpret-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ instruction, timeContext: getTimeContext() })
+      });
+      const data: unknown = await response.json();
+      if (!response.ok)
+        throw new Error(
+          typeof data === "object" && data && "error" in data
+            ? String(data.error)
+            : "Could not prepare the draft."
+        );
+      setDraft(ActionItemSchema.parse(data));
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Could not prepare the draft.");
+    } finally {
+      setState("idle");
+    }
+  }
+  async function confirm() {
+    if (!draft) return;
+    try {
+      await actionRepository.saveConfirmed(draft);
+      setDraft(null);
+      setInstruction("");
+      setEditing(false);
+      setState("saved");
+    } catch {
+      setError("This action could not be saved locally.");
+    }
+  }
+  function discard() {
+    setDraft(null);
+    setEditing(false);
+    setState("idle");
+    setError(null);
+  }
+  return (
+    <div className="workspace">
+      <section className="card" aria-labelledby="capture-heading">
+        <h2 id="capture-heading">What needs doing?</h2>
+        <label htmlFor="instruction">Instruction</label>
+        <textarea
+          id="instruction"
+          value={instruction}
+          maxLength={2000}
+          disabled={state === "loading"}
+          placeholder="Remind me tomorrow at 10 to call the university about my sponsorship letter."
+          onChange={(event) => {
+            setInstruction(event.target.value);
+            setState("idle");
+          }}
+        />
+        <p className="hint">
+          {instruction.length}/2,000 characters · your timezone and locale are included for date
+          interpretation.
+        </p>
+        <button
+          className="button primary"
+          type="button"
+          disabled={!instruction.trim() || state === "loading"}
+          onClick={prepare}
+        >
+          {state === "loading" ? (
+            <>
+              <span className="spinner" aria-hidden="true" />
+              Preparing draft…
+            </>
+          ) : (
+            "Prepare action"
+          )}
+        </button>
+        {error ? (
+          <p className="error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        {state === "saved" ? (
+          <p className="success" role="status">
+            Action confirmed and saved locally.
+          </p>
+        ) : null}
+      </section>
+      <section className="card" aria-live="polite">
+        {draft ? (
+          <>
+            <ActionCard action={draft} editing={editing} onChange={setDraft} />
+            <div className="actions">
+              <button className="button primary" type="button" onClick={confirm}>
+                Confirm and save
+              </button>
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => setEditing((value) => !value)}
+              >
+                {editing ? "Finish editing" : "Edit"}
+              </button>
+              <button className="button ghost" type="button" onClick={discard}>
+                Discard
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p className="eyebrow">Preview</p>
+            <h2>Nothing is saved yet.</h2>
+            <p className="muted">
+              Your editable Action Card will appear here. Confirm it only when the action and timing
+              look right.
+            </p>
+          </>
+        )}
+      </section>
+    </div>
+  );
+}
