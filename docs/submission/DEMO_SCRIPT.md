@@ -63,7 +63,7 @@ End card: ActionLens name, live URL, repository URL, “Synthetic demo — no pe
 1. Home → **Reset demo data**.
 2. **Try the “No deadline stated” demo**.
 3. **Try a source-verified action** → **Confirm Proof-Linked Action**.
-4. **Try Proof of Done** → **Try weak evidence**.
-5. **Try strong evidence** → **Mark complete**.
+4. Try Proof of Done → Try weak evidence.
+5. Scroll down → Add more evidence → Try strong evidence → Mark complete.
 6. **Action Inbox** → **Completed** → **Open action**.
 7. Return home and reset before another take.
