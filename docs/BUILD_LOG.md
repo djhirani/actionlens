@@ -150,7 +150,7 @@ These are measured synthetic-fixture results, not a claim of general-world accur
 
 ## 2026-07-18 — Stage 7: Deployment and submission package
 
-- Starting commit: `d229047`; final Stage 7 commit is the commit containing this entry and is reported in the completion report.
+- Starting commit: `d229047`; primary Stage 7 submission commit: `5bd7227`; final evidence-only commit is reported in the completion report.
 - Rewrote the README for judge scanning with the problem, Proof Loop, architecture, setup, environment boundaries, commands, live path, measured results, privacy, GPT-5.6/Codex roles, human decisions, dated milestones, synthetic notice, limitations, and licence.
 - Added an MIT licence, Vercel deployment runbook/evidence, under-three-minute narrated script, exact click path, product-accurate Devpost copy, submission checklist, and Codex evidence file.
 - Preserved primary Codex thread `019f72a7-65bd-7071-8682-10b3b216d4af`; left the `/feedback` ID explicitly pending rather than inventing it.

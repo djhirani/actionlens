@@ -149,6 +149,7 @@ The human owner made the central product decisions: deterministic proof-link ver
 | 2026-07-18 | `cf5be16` | Reproducible evals and security hardening   |
 | 2026-07-18 | `9bad061` | Prize-quality responsive demo experience    |
 | 2026-07-18 | `d229047` | Build Week Git evidence                     |
+| 2026-07-18 | `5bd7227` | Deployment and final submission package     |
 
 ## Limitations
 
