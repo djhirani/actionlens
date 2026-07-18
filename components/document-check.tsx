@@ -55,6 +55,7 @@ export function DocumentCheck() {
             : "Document analysis failed."
         );
       setResult(DocumentAnalysisResultSchema.parse(data));
+      releaseFile();
     } catch (caught) {
       setError(
         caught instanceof TypeError
@@ -64,7 +65,6 @@ export function DocumentCheck() {
             : "Document analysis failed."
       );
     } finally {
-      releaseFile();
       setState("idle");
     }
   }

@@ -8,6 +8,8 @@ export const PDF_LIMITS = {
 
 export class PdfInputError extends Error {}
 
+const PDF_WORKER_URL = "/pdf.worker.min.mjs";
+
 export async function validatePdfFile(file: File) {
   if (file.type !== "application/pdf") throw new PdfInputError("Choose a PDF file.");
   if (file.size > PDF_LIMITS.maxBytes) throw new PdfInputError("The PDF must be 10 MB or smaller.");
@@ -33,10 +35,7 @@ export async function extractPdfText(file: File): Promise<SourcePage[]> {
   const data = new Uint8Array(await file.arrayBuffer());
   try {
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-      "pdfjs-dist/legacy/build/pdf.worker.min.mjs",
-      import.meta.url
-    ).toString();
+    pdfjs.GlobalWorkerOptions.workerSrc = PDF_WORKER_URL;
     const loadingTask = pdfjs.getDocument({ data });
     const document = await loadingTask.promise;
     try {
@@ -58,8 +57,11 @@ export async function extractPdfText(file: File): Promise<SourcePage[]> {
     if (error instanceof PdfInputError) throw error;
     const name = error instanceof Error ? error.name : "";
     if (name === "PasswordException") throw new PdfInputError("Encrypted PDFs are not supported.");
+    if (name === "InvalidPDFException" || name === "MissingPDFException")
+      throw new PdfInputError("ActionLens could not read this file because it is not a valid PDF.");
+    console.error("PDF.js failed to parse the selected PDF", error);
     throw new PdfInputError(
-      "ActionLens could not read this PDF. Try a text-based, unencrypted PDF."
+      "The PDF parser could not start or finish. Keep the file selected and retry."
     );
   }
 }

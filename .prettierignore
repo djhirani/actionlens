@@ -2,3 +2,4 @@ ActionLens_Codex_Build_Pack/
 ActionLens_Codex_Build_Pack.zip
 .next/
 node_modules/
+public/pdf.worker.min.mjs
