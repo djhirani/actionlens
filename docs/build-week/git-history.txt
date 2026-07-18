@@ -1,0 +1,7 @@
+9bad061 | 2026-07-18 09:41:26 +0100 | feat: polish proof-linked action experience for demo
+cf5be16 | 2026-07-18 04:13:58 +0100 | test: add reproducible proof-loop evals and hardening
+209cdbb | 2026-07-18 03:44:30 +0100 | feat: add local action inbox and proof history
+15064df | 2026-07-18 03:29:13 +0100 | feat: complete proof-of-done verification loop
+4fedac2 | 2026-07-18 03:09:22 +0100 | feat: add deterministic proof-linked PDF action extraction
+aad3ee8 | 2026-07-18 02:32:40 +0100 | feat: build typed action capture and local confirmation flow
+4032c92 | 2026-07-17 23:56:07 +0100 | Initial commit
