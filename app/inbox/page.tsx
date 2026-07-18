@@ -5,7 +5,9 @@ export default function InboxPage() {
     <main className="main">
       <p className="eyebrow">Saved locally</p>
       <h1>Action Inbox</h1>
-      <p className="lede">Only actions you confirmed appear here.</p>
+      <p className="lede">
+        Review overdue, due, upcoming, and completed actions stored in this browser.
+      </p>
       <ActionInbox />
     </main>
   );

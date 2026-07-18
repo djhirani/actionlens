@@ -46,6 +46,10 @@ The full completion source and original completion file remain transient and are
 
 Completion history does not itself close an action. Only the user's explicit **Mark complete** decision changes action status.
 
+## Action deletion
+
+Deleting an action requires explicit confirmation. The local repository deletes the Action Item and all associated completion checks in one IndexedDB transaction. No remote deletion is needed because ActionLens has no account or cloud database.
+
 ## Current limits
 
 - Text-based, unencrypted PDFs only.

@@ -66,3 +66,27 @@ Proof of Done, completion evidence, image OCR, voice, and notifications remain o
 - The existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; the breaking automated downgrade was not applied.
 
 Image/OCR evidence, screenshots, voice, notifications, and Stage 4 inbox expansion remain out of scope.
+
+## 2026-07-18 — Stage 4: Action Inbox
+
+- Replaced the confirmed-only list with Today, Upcoming, and Completed groups.
+- Added timezone-aware due/overdue computation, undated handling, group counts, and empty states.
+- Kept completed actions visible after human closure.
+- Added source-verification, ambiguity, due, and local-status badges.
+- Expanded action details with due metadata, live closure status, completion history, and explicit deletion.
+- Added atomic local deletion for actions and their completion checks.
+- Improved mobile navigation and sticky inbox tabs.
+- Omitted optional voice to protect proof-loop stability and Stage 5 readiness.
+
+### Verification
+
+- Pre-change regression: 11 files / 37 tests and 3 Playwright tests passed.
+- `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 12 files, 42 tests.
+- `npm run test:e2e` — passed: 3 Chromium tests, including completed grouping and deletion.
+- `npm run build` — passed.
+- The existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; the breaking automated downgrade was not applied.
+
+Voice, notifications, image OCR, accounts, cloud sync, and Stage 5 eval work remain out of scope.

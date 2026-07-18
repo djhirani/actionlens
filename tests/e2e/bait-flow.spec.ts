@@ -31,4 +31,16 @@ test("strong proof appears complete but waits for human closure", async ({ page 
   await page.getByRole("button", { name: "Mark complete" }).click();
   await expect(page.getByRole("status")).toContainText("Marked complete");
   await expect(page.getByText("Action status: completed")).toBeVisible();
+  await page.goto("/inbox");
+  await page.getByRole("tab", { name: /Completed/ }).click();
+  await expect(
+    page.getByRole("heading", { name: "Upload sponsorship confirmation" })
+  ).toBeVisible();
+  await expect(page.getByText("Completed by you")).toBeVisible();
+  await page.getByRole("link", { name: "Open action" }).click();
+  await page.getByRole("button", { name: "Delete action" }).click();
+  await page.getByRole("button", { name: "Delete permanently" }).click();
+  await expect(page).toHaveURL(/\/inbox$/);
+  await page.getByRole("tab", { name: /Completed/ }).click();
+  await expect(page.getByRole("heading", { name: "No completed actions" })).toBeVisible();
 });

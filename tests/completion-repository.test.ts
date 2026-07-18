@@ -54,4 +54,10 @@ describe("human closure and completion persistence", () => {
     const check = await completionRepository.savePending(result, true);
     expect(check.matchedCriteria[0]?.evidence.quote).toBe("");
   });
+  it("deletes an action and its completion history atomically", async () => {
+    await completionRepository.savePending(getStrongProofResult(), false);
+    await actionRepository.deleteById(PROOF_DEMO_ACTION.id);
+    expect(await actionRepository.getById(PROOF_DEMO_ACTION.id)).toBeNull();
+    expect(await completionRepository.listForAction(PROOF_DEMO_ACTION.id)).toHaveLength(0);
+  });
 });

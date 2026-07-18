@@ -14,6 +14,9 @@ ActionLens turns natural-language instructions into editable action drafts. Noth
 - Built-in “No deadline stated” demonstration
 - Proof of Done checks for pasted text and text-based PDFs
 - Deterministic completion-evidence verification with human-controlled closure
+- Local Action Inbox grouped into Today, Upcoming, and Completed
+- Due/overdue, source-verification, and ambiguity states
+- Action detail, proof history, and local deletion controls
 
 Image OCR, voice, notifications, accounts, and cloud sync are intentionally not implemented yet.
 
@@ -43,5 +46,7 @@ npm run build
 For text PDFs, ActionLens extracts text in the browser and sends extracted text to OpenAI for analysis. The original PDF is not sent or saved. Only a human-confirmed Action Card, its source hash, and minimal verified excerpts are stored locally in IndexedDB.
 
 Completion checks compare later evidence with explicit criteria. `Appears complete` is an evidence-comparison result, not confirmation of official acceptance. An action remains open until the user chooses **Mark complete**.
+
+The Action Inbox uses due language only. ActionLens does not promise browser notifications or background reminders when the app is closed.
 
 ActionLens helps organise information. It does not provide legal, medical, financial, or official institutional advice.

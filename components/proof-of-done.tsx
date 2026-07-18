@@ -22,11 +22,13 @@ const statusLabel = {
 export function ProofOfDone({
   action,
   initialHistory,
-  demo = false
+  demo = false,
+  onStatusChange
 }: {
   action: ActionItem;
   initialHistory: CompletionCheck[];
   demo?: boolean;
+  onStatusChange?: (action: ActionItem) => void;
 }) {
   const fileRef = useRef<File | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -106,6 +108,7 @@ export function ProofOfDone({
     if (!result) return;
     const updated = await completionRepository.decide(result.id, decision);
     setStatus(updated.action.status);
+    onStatusChange?.(updated.action);
     setResult({ ...result, userDecision: decision });
     setHistory(await completionRepository.listForAction(action.id));
   }

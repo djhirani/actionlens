@@ -62,6 +62,13 @@ export const actionRepository = {
       .map((row) => ActionItemSchema.parse(row))
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   },
+  async listInbox() {
+    const rows = await getDatabase()
+      .actions.where("status")
+      .anyOf("confirmed", "completed")
+      .toArray();
+    return rows.map((row) => ActionItemSchema.parse(row));
+  },
   async getById(id: string) {
     const action = await getDatabase().actions.get(id);
     return action ? ActionItemSchema.parse(action) : null;
@@ -71,6 +78,17 @@ export const actionRepository = {
   },
   async clear() {
     await getDatabase().actions.clear();
+  },
+  async deleteById(id: string) {
+    await getDatabase().transaction(
+      "rw",
+      getDatabase().actions,
+      getDatabase().completionChecks,
+      async () => {
+        await getDatabase().completionChecks.where("actionId").equals(id).delete();
+        await getDatabase().actions.delete(id);
+      }
+    );
   }
 };
 

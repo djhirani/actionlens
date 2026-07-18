@@ -42,6 +42,9 @@ a:focus-visible {
   padding: 1rem clamp(1rem, 4vw, 3rem);
   background: #07162d;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 .brand {
   color: white;
@@ -208,6 +211,86 @@ textarea {
   gap: 0.75rem;
   padding: 0;
   list-style: none;
+}
+.inbox-summary {
+  margin: 1rem 0;
+  color: var(--muted);
+}
+.inbox-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+.inbox-tabs button {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+  padding: 0.75rem;
+  color: var(--muted);
+  font-weight: 750;
+  cursor: pointer;
+}
+.inbox-tabs button.active {
+  background: var(--ink);
+  color: white;
+  border-color: var(--ink);
+}
+.inbox-tabs button span {
+  min-width: 1.5rem;
+  border-radius: 999px;
+  background: #e8eff9;
+  color: var(--ink);
+}
+.inbox-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.due-overdue {
+  background: #fff0f2;
+  color: #a51d2d;
+}
+.due-due_today {
+  background: #fff3dd;
+  color: var(--amber);
+}
+.due-completed,
+.source-status {
+  background: #e8f8ef;
+  color: #135d3c;
+}
+.inbox-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.inbox-meta div {
+  border-top: 1px solid var(--line);
+  padding-top: 0.65rem;
+}
+.inbox-meta dt {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.inbox-meta dd {
+  margin: 0.25rem 0 0;
+}
+.empty-state {
+  text-align: center;
+}
+.danger-zone {
+  margin-top: 1.25rem;
+  border-color: #efc4c9;
+}
+.button.danger {
+  background: #a51d2d;
+  color: white;
 }
 .inbox-item {
   border: 1px solid var(--line);
@@ -433,5 +516,27 @@ mark {
   }
   .bridge-action {
     border-radius: 0 0 20px 20px;
+  }
+  .nav {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
+  }
+  .navlinks {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .navlinks a {
+    padding: 0.4rem 0.2rem;
+  }
+  .inbox-tabs {
+    position: sticky;
+    top: 68px;
+    z-index: 10;
+    background: var(--canvas);
+    padding: 0.5rem 0;
+  }
+  .inbox-meta {
+    grid-template-columns: 1fr;
   }
 }

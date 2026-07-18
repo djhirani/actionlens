@@ -88,3 +88,17 @@ The completion gate ignores the model's proposed status when computing the appli
 Dexie schema version 2 adds completion checks. Existing proof-linked actions without criteria receive one conservative migration criterion that requires evidence explicitly confirming the saved action text.
 
 The weak and strong built-in fixtures are synthetic and run through the same completion gate as live proposals. The weak generic receipt cannot become `appears_complete`; the strong named receipt still waits for human closure.
+
+## Stage 4 Action Inbox
+
+The IndexedDB repository returns both `confirmed` and `completed` actions. `lib/inbox/group-actions.ts` is a pure presentation layer that groups them as:
+
+- **Today:** overdue actions plus actions due on the current calendar date in each action's IANA timezone;
+- **Upcoming:** future-dated and undated confirmed actions;
+- **Completed:** actions explicitly closed by the human Proof of Done decision.
+
+Completed actions therefore remain visible after closure. Grouping never changes status. Due state is computed on load and displayed as `Overdue`, `Due today`, `Upcoming`, or `No date supplied`; the interface does not promise push notifications.
+
+Action details display due date, source verification, ambiguity, local status, completion criteria, and completion-check history. Permanent deletion requires a second explicit click and removes the Action Item and its completion checks in one IndexedDB transaction.
+
+Voice capture was intentionally omitted. The required inbox and proof loop are complete, while adding recording permissions, temporary audio handling, and another server route would add risk without improving the Stage 4 core outcome.
