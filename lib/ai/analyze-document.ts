@@ -11,6 +11,7 @@ import {
 const INSTRUCTIONS = `Analyse a text-extracted document and propose claims for one action.
 Return null for any absent required action, deadline, or consequence.
 Never treat an issue date, event date, office closure date, or appointment date as an action deadline.
+When a required action exists, provide at least one specific completion criterion that names what later evidence must confirm. Do not provide criteria when no required action exists.
 For every non-null factual action/deadline/consequence and every completion criterion, include one claim whose value exactly equals the corresponding field and whose quote is copied exactly from the source.
 Quotes are evidence proposals only. Never assign verification status.
 List conflicting dates or interpretations and ask a concise clarification question.

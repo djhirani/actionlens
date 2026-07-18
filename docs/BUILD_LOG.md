@@ -44,3 +44,25 @@ Verification results and the final commit SHA are recorded in the Stage 1 comple
 - The pre-existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; npm's force-fix proposes an unsafe Next.js 9 downgrade and was not applied.
 
 Proof of Done, completion evidence, image OCR, voice, and notifications remain outside Stage 2.
+
+## 2026-07-18 — Stage 3: Proof of Done
+
+- Added explicit required completion criteria to confirmed document-derived actions and a conservative migration for existing local Stage 2 actions.
+- Added pasted-text and text-PDF completion evidence with 3-page and 30,000-character limits.
+- Added GPT-5.6 structured completion comparison through `/api/verify-completion`.
+- Added deterministic completion quote verification and application-controlled tri-state gating.
+- Added Action detail pages, completion history, and explicit Mark complete / Keep open / Add more evidence controls.
+- Added opt-in retention for verified completion excerpts; original files, complete evidence text, near matches, and unsupported quotes are not persisted.
+- Added synthetic weak and strong Proof of Done fixtures and a built-in demo.
+
+### Verification
+
+- `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 11 files, 37 tests.
+- `npm run test:e2e` — passed: 3 Chromium tests covering deadline bait, weak-proof rejection/history, and strong-proof human closure.
+- `npm run build` — passed, including `/actions/[id]`, `/api/verify-completion`, and `/proof-demo`.
+- The existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; the breaking automated downgrade was not applied.
+
+Image/OCR evidence, screenshots, voice, notifications, and Stage 4 inbox expansion remain out of scope.

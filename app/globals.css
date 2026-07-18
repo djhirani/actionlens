@@ -345,6 +345,81 @@ mark {
   align-items: center;
   gap: 0.8rem;
 }
+.inline-button {
+  display: inline-block;
+  text-decoration: none;
+}
+.proof-demo-callout {
+  margin-top: 2rem;
+}
+.proof-panel {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+.criteria {
+  background: #eef5ff;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+.criteria ul {
+  margin-bottom: 0;
+}
+.proof-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  margin: 1rem 0;
+}
+.proof-divider::before,
+.proof-divider::after {
+  content: "";
+  height: 1px;
+  background: var(--line);
+  flex: 1;
+}
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+.checkbox input {
+  width: auto;
+  margin-top: 0.2rem;
+}
+.completion-result blockquote {
+  grid-column: 1 / -1;
+  margin: 0.4rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--blue);
+  color: var(--muted);
+}
+.completion-appears_complete {
+  background: #e8f8ef;
+  color: #135d3c;
+}
+.completion-not_verified {
+  background: #fff0f2;
+  color: #a51d2d;
+}
+.disclaimer {
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  font-weight: 650;
+}
+.history-list {
+  padding-left: 1.25rem;
+}
+.history-list li {
+  margin-bottom: 0.8rem;
+}
+.detail-title {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
 @media (max-width: 760px) {
   .evidence-bridge {
     grid-template-columns: 1fr;

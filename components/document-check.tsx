@@ -106,6 +106,11 @@ export function DocumentCheck() {
           .filter((item) => item.verificationStatus === "verified")
           .map((item) => item.quote)
       },
+      completionCriteria: result.completionCriteria.map((description, index) => ({
+        id: `criterion-${index + 1}`,
+        description,
+        required: true
+      })),
       provenance: {
         model: result.provenance.model,
         pipelineVersion: "stage-2-v1",

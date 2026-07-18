@@ -11,6 +11,7 @@ export function actionFixture(overrides: Partial<ActionItem> = {}): ActionItem {
     context: "Sponsorship letter",
     status: "draft",
     sourceText: "Remind me tomorrow at 10 to call the university about my sponsorship letter.",
+    completionCriteria: [],
     uncertainty: { requiresHumanReview: false, reasons: [], clarificationQuestion: null },
     provenance: {
       model: "gpt-5.6",

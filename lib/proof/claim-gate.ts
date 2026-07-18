@@ -64,6 +64,7 @@ export function applyClaimGate(
   const conflicts = proposal.uncertainty.conflicts;
   const allRequiredClaimsVerified =
     Boolean(proposal.requiredAction) &&
+    proposal.completionCriteria.length > 0 &&
     evidence.every((item) => item.verificationStatus === "verified");
   const requiresHumanReview =
     proposal.uncertainty.requiresHumanReview ||

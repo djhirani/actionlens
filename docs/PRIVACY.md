@@ -38,9 +38,18 @@ The application states before analysis that extracted text is sent to OpenAI and
 
 ActionLens does not claim full on-device AI. It does not log raw document content in application code.
 
+## Completion evidence
+
+Pasted completion text and text-based completion PDFs use the same local extraction, normalization, hashing, and cloud disclosure model. Completion evidence is limited to 3 pages or 30,000 extracted characters.
+
+The full completion source and original completion file remain transient and are not placed in IndexedDB. Each check stores status, criterion explanations, source hash, and human decision. Verified evidence excerpts are stored only when the user explicitly enables **Save verified completion excerpts locally**. Near-match and unsupported model-proposed quotes are never retained, even when that option is enabled.
+
+Completion history does not itself close an action. Only the user's explicit **Mark complete** decision changes action status.
+
 ## Current limits
 
 - Text-based, unencrypted PDFs only.
 - Maximum 5 pages and 50,000 extracted characters.
 - Image-only PDFs and OCR are not supported in Stage 2.
+- Image completion evidence and screenshots are not supported in Stage 3.
 - Local browser storage remains subject to browser storage controls and private-browsing restrictions.

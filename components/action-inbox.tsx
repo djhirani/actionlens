@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { actionRepository } from "@/lib/db";
 import type { ActionItem } from "@/lib/schemas";
 
@@ -47,6 +48,9 @@ export function ActionInbox() {
                 }).format(new Date(action.dueAt))
               : "No date supplied"}
           </p>
+          <Link className="button secondary inline-button" href={`/actions/${action.id}`}>
+            Open action
+          </Link>
         </li>
       ))}
     </ul>

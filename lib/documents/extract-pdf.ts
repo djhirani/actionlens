@@ -63,3 +63,12 @@ export async function extractPdfText(file: File): Promise<SourcePage[]> {
     );
   }
 }
+
+export async function extractCompletionPdfText(file: File): Promise<SourcePage[]> {
+  const pages = await extractPdfText(file);
+  if (pages.length > 3)
+    throw new PdfInputError("Use completion evidence with no more than 3 pages.");
+  if (pages.reduce((total, page) => total + page.text.length, 0) > 30_000)
+    throw new PdfInputError("Completion evidence must contain no more than 30,000 characters.");
+  return pages;
+}

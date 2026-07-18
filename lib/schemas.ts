@@ -9,7 +9,7 @@ export const UncertaintySchema = z.object({
 });
 export const ProvenanceSchema = z.object({
   model: z.string().min(1),
-  pipelineVersion: z.enum(["stage-1-v1", "stage-2-v1"]),
+  pipelineVersion: z.enum(["stage-1-v1", "stage-2-v1", "stage-3-v1"]),
   analyzedAt: z.string().datetime({ offset: true }),
   timezone: z.string().min(1),
   locale: z.string().min(2)
@@ -45,6 +45,16 @@ export const ActionItemSchema = ModelActionDraftSchema.extend({
       evidenceQuotes: z.array(z.string().max(2000))
     })
     .optional(),
+  completionCriteria: z
+    .array(
+      z.object({
+        id: z.string().min(1).max(100),
+        description: z.string().min(1).max(300),
+        required: z.boolean()
+      })
+    )
+    .max(10)
+    .default([]),
   provenance: ProvenanceSchema,
   createdAt: z.string().datetime({ offset: true }),
   updatedAt: z.string().datetime({ offset: true })
@@ -141,6 +151,79 @@ export const DocumentAnalysisResultSchema = z.object({
   })
 });
 
+export const CompletionStatusSchema = z.enum([
+  "appears_complete",
+  "needs_human_review",
+  "not_verified"
+]);
+export const CompletionEvidencePageSchema = z.object({
+  pageNumber: z.number().int().min(1).max(3),
+  text: z.string().max(30_000)
+});
+export const ModelCompletionProposalSchema = z.object({
+  proposedStatus: CompletionStatusSchema,
+  matchedCriteria: z.array(
+    z.object({
+      criterionId: z.string().min(1).max(100),
+      explanation: z.string().min(1).max(500),
+      quote: z.string().min(1).max(2000)
+    })
+  ),
+  missingCriteria: z.array(z.string().min(1).max(100)),
+  uncertaintyReasons: z.array(z.string().min(1).max(300)).max(10),
+  explanation: z.string().min(1).max(1000),
+  disclaimer: z.string().min(1).max(500)
+});
+export const VerifyCompletionRequestSchema = z
+  .object({
+    action: ActionItemSchema,
+    displayName: z.string().min(1).max(255),
+    sourceHash: z.string().regex(/^[a-f0-9]{64}$/),
+    pages: z.array(CompletionEvidencePageSchema).min(1).max(3),
+    timeContext: TimeContextSchema
+  })
+  .superRefine((value, context) => {
+    if (value.action.source?.kind !== "pdf")
+      context.addIssue({
+        code: "custom",
+        message: "Proof of Done requires a document-derived action"
+      });
+    if (!value.action.completionCriteria.some((criterion) => criterion.required))
+      context.addIssue({ code: "custom", message: "At least one required criterion is needed" });
+    const characters = value.pages.reduce((total, page) => total + page.text.length, 0);
+    if (characters > 30_000)
+      context.addIssue({
+        code: "custom",
+        message: "Completion evidence exceeds 30,000 characters"
+      });
+  });
+export const CompletionEvidenceMatchSchema = z.object({
+  criterionId: z.string(),
+  explanation: z.string(),
+  evidence: EvidenceMatchSchema.omit({ kind: true, value: true })
+});
+export const CompletionCheckSchema = z.object({
+  id: z.string().uuid(),
+  actionId: z.string().uuid(),
+  status: CompletionStatusSchema,
+  matchedCriteria: z.array(CompletionEvidenceMatchSchema),
+  missingCriteria: z.array(z.string()),
+  uncertaintyReasons: z.array(z.string()),
+  explanation: z.string(),
+  disclaimer: z.string(),
+  source: z.object({
+    displayName: z.string(),
+    sourceHash: z.string().regex(/^[a-f0-9]{64}$/),
+    retained: z.literal(false),
+    excerptsSaved: z.boolean()
+  }),
+  userDecision: z.enum(["pending", "mark_complete", "keep_open"]),
+  createdAt: z.string().datetime()
+});
+export const CompletionAnalysisResultSchema = CompletionCheckSchema.extend({
+  sourcePages: z.array(CompletionEvidencePageSchema).min(1).max(3)
+});
+
 export type ActionItem = z.infer<typeof ActionItemSchema>;
 export type ModelActionDraft = z.infer<typeof ModelActionDraftSchema>;
 export type InterpretRequest = z.infer<typeof InterpretRequestSchema>;
@@ -148,3 +231,8 @@ export type SourcePage = z.infer<typeof SourcePageSchema>;
 export type ModelDocumentProposal = z.infer<typeof ModelDocumentProposalSchema>;
 export type AnalyzeDocumentRequest = z.infer<typeof AnalyzeDocumentRequestSchema>;
 export type DocumentAnalysisResult = z.infer<typeof DocumentAnalysisResultSchema>;
+export type CompletionCriterion = z.infer<typeof ActionItemSchema>["completionCriteria"][number];
+export type ModelCompletionProposal = z.infer<typeof ModelCompletionProposalSchema>;
+export type VerifyCompletionRequest = z.infer<typeof VerifyCompletionRequestSchema>;
+export type CompletionCheck = z.infer<typeof CompletionCheckSchema>;
+export type CompletionAnalysisResult = z.infer<typeof CompletionAnalysisResultSchema>;
