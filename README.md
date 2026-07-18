@@ -9,8 +9,11 @@ ActionLens turns natural-language instructions into editable action drafts. Noth
 - Edit, confirm, and discard controls
 - Confirmed actions stored locally in IndexedDB
 - Minimal local Action Inbox
+- Text-based PDF extraction in the browser with five-page and 50,000-character limits
+- Deterministic source-quote matching and claim refusal gate
+- Built-in “No deadline stated” demonstration
 
-Document upload, Proof of Done, voice, notifications, accounts, and cloud sync are intentionally not part of Stage 1.
+Proof of Done, image OCR, voice, notifications, accounts, and cloud sync are intentionally not implemented yet.
 
 ## Local setup
 
@@ -29,7 +32,12 @@ npm run format:check
 npm run lint
 npm run typecheck
 npm test
+npm run test:e2e
 npm run build
 ```
+
+## Document privacy
+
+For text PDFs, ActionLens extracts text in the browser and sends extracted text to OpenAI for analysis. The original PDF is not sent or saved. Only a human-confirmed Action Card, its source hash, and minimal verified excerpts are stored locally in IndexedDB.
 
 ActionLens helps organise information. It does not provide legal, medical, financial, or official institutional advice.

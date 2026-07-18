@@ -1,4 +1,5 @@
 import { ActionCapture } from "@/components/action-capture";
+import { DocumentCheck } from "@/components/document-check";
 
 export default function HomePage() {
   return (
@@ -12,6 +13,7 @@ export default function HomePage() {
         </p>
       </section>
       <ActionCapture />
+      <DocumentCheck />
     </main>
   );
 }

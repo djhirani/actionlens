@@ -21,3 +21,26 @@
 - `npm audit --audit-level=moderate` — reported two moderate findings in the PostCSS version bundled inside Next.js 16.2.10. The automated force-fix proposes a breaking downgrade to Next.js 9.3.3 and was intentionally not applied.
 
 Verification results and the final commit SHA are recorded in the Stage 1 completion report.
+
+## 2026-07-18 — Stage 2: Document to Proof-Linked Action
+
+- Added browser-only text PDF validation and extraction with `pdfjs-dist`.
+- Enforced PDF MIME/magic bytes, 10 MB, 5-page, and 50,000-character limits with encrypted/image-only error handling.
+- Added deterministic normalization, source hashing, exact quote matching, strict near-match review, original offset mapping, and conservative claim gating.
+- Added GPT-5.6 structured document extraction through the Responses API; the model proposes evidence but cannot assign verification status.
+- Added the privacy sheet, Evidence Bridge, blocked/conflict states, and confirmation restrictions.
+- Added the synthetic “No deadline stated” bait fixture and home-screen demo control.
+- Added `docs/PRIVACY.md`, Playwright configuration, and Stage 2 tests.
+
+### Verification
+
+- `npm install --cache /private/tmp/actionlens-npm-cache` — passed; 460 packages installed/audited.
+- `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 9 files, 26 tests.
+- `npm run test:e2e` — passed: 1 Chromium bait-flow test.
+- `npm run build` — passed, including `/api/analyze-document`.
+- The pre-existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; npm's force-fix proposes an unsafe Next.js 9 downgrade and was not applied.
+
+Proof of Done, completion evidence, image OCR, voice, and notifications remain outside Stage 2.
