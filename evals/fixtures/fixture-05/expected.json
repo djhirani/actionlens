@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-05",
+  "kind": "document",
+  "expectedActionPresent": true,
+  "expectedActionKeywords": ["provide", "proof", "student status"],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": [],
+  "expectedExactEvidence": true,
+  "expectedHumanReview": false,
+  "expectedCompletionStatus": null,
+  "notes": "The required action is supported but no deadline may be invented."
+}

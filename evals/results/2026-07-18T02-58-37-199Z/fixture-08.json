@@ -1,0 +1,87 @@
+{
+  "fixtureId": "fixture-08",
+  "expected": {
+    "fixtureId": "fixture-08",
+    "kind": "completion",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": "appears_complete",
+    "notes": "Named receipt exactly supports the criterion but still requires a human Mark complete decision."
+  },
+  "proposal": {
+    "proposedStatus": "needs_human_review",
+    "matchedCriteria": [
+      {
+        "criterionId": "sponsorship-upload",
+        "explanation": "The evidence explicitly names the Sponsorship Confirmation document as received and provides an upload reference.",
+        "quote": "We received your Sponsorship Confirmation document on 20 July 2026. Your upload reference is DEMO-4821."
+      }
+    ],
+    "missingCriteria": [],
+    "uncertaintyReasons": [
+      "The stated receipt date, 20 July 2026, is later than the supplied current date, 18 July 2026, so the evidence has a date inconsistency requiring human review."
+    ],
+    "explanation": "The wording matches the required document-specific criterion, but the future-dated receipt prevents the evidence from being treated as clearly verified.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance."
+  },
+  "gated": {
+    "id": "fa31a1f1-817b-48b5-b855-cbf3da68919e",
+    "actionId": "00000000-0000-4000-8000-000000000007",
+    "status": "needs_human_review",
+    "matchedCriteria": [
+      {
+        "criterionId": "sponsorship-upload",
+        "explanation": "The evidence explicitly names the Sponsorship Confirmation document as received and provides an upload reference.",
+        "evidence": {
+          "quote": "We received your Sponsorship Confirmation document on 20 July 2026. Your upload reference is DEMO-4821.",
+          "normalizedQuote": "We received your Sponsorship Confirmation document on 20 July 2026. Your upload reference is DEMO-4821.",
+          "page": 1,
+          "charStart": 0,
+          "charEnd": 103,
+          "verificationStatus": "verified",
+          "verificationReason": "Exact match found after deterministic normalization."
+        }
+      }
+    ],
+    "missingCriteria": [],
+    "uncertaintyReasons": [
+      "The stated receipt date, 20 July 2026, is later than the supplied current date, 18 July 2026, so the evidence has a date inconsistency requiring human review."
+    ],
+    "explanation": "The wording matches the required document-specific criterion, but the future-dated receipt prevents the evidence from being treated as clearly verified.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance.",
+    "source": {
+      "displayName": "Synthetic completion evidence",
+      "sourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "retained": false,
+      "excerptsSaved": false
+    },
+    "userDecision": "pending",
+    "createdAt": "2026-07-18T02:59:29.223Z"
+  },
+  "observation": {
+    "action": "Upload sponsorship confirmation.",
+    "deadline": null,
+    "exactEvidence": true,
+    "humanReview": true,
+    "completionStatus": "needs_human_review",
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-08",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": false,
+    "completionCorrect": false,
+    "inventedClaimCount": 0,
+    "passed": false,
+    "failures": [
+      "human-review escalation did not match the human label",
+      "completion status did not match the human label"
+    ]
+  }
+}

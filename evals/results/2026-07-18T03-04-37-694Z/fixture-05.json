@@ -1,0 +1,101 @@
+{
+  "fixtureId": "fixture-05",
+  "expected": {
+    "fixtureId": "fixture-05",
+    "kind": "document",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["provide", "proof", "student status"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "The required action is supported but no deadline may be invented."
+  },
+  "proposal": {
+    "documentType": "Student status evidence request",
+    "explanation": "The document requests proof of current student status through the council upload page. It explicitly states that no deadline is given; any personal target date is not an official deadline.",
+    "requiredAction": "Provide proof of current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [
+      "The council upload page contains uploaded proof of current student status."
+    ],
+    "uncertainty": {
+      "requiresHumanReview": false,
+      "conflicts": [],
+      "clarificationQuestion": null
+    },
+    "claims": [
+      {
+        "kind": "required_action",
+        "value": "Provide proof of current student status using the council upload page.",
+        "quote": "Please provide proof of your current student status using the council upload page."
+      },
+      {
+        "kind": "completion_criterion",
+        "value": "The council upload page contains uploaded proof of current student status.",
+        "quote": "Please provide proof of your current student status using the council upload page."
+      }
+    ]
+  },
+  "gated": {
+    "documentType": "Student status evidence request",
+    "explanation": "The document requests proof of current student status through the council upload page. It explicitly states that no deadline is given; any personal target date is not an official deadline.",
+    "requiredAction": "Provide proof of current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [
+      "The council upload page contains uploaded proof of current student status."
+    ],
+    "evidence": [
+      {
+        "quote": "Please provide proof of your current student status using the council upload page.",
+        "normalizedQuote": "Please provide proof of your current student status using the council upload page.",
+        "page": 1,
+        "charStart": 90,
+        "charEnd": 172,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "required_action",
+        "value": "Provide proof of current student status using the council upload page."
+      },
+      {
+        "quote": "Please provide proof of your current student status using the council upload page.",
+        "normalizedQuote": "Please provide proof of your current student status using the council upload page.",
+        "page": 1,
+        "charStart": 90,
+        "charEnd": 172,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "completion_criterion",
+        "value": "The council upload page contains uploaded proof of current student status."
+      }
+    ],
+    "blockedClaims": [],
+    "conflicts": [],
+    "clarificationQuestion": null,
+    "requiresHumanReview": false,
+    "allRequiredClaimsVerified": true,
+    "canConfirm": true
+  },
+  "observation": {
+    "action": "Provide proof of current student status using the council upload page.",
+    "deadline": null,
+    "exactEvidence": true,
+    "humanReview": false,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-05",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

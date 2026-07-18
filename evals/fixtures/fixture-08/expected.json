@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-08",
+  "kind": "completion",
+  "expectedActionPresent": true,
+  "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": [],
+  "expectedExactEvidence": true,
+  "expectedHumanReview": false,
+  "expectedCompletionStatus": "appears_complete",
+  "notes": "Named receipt exactly supports the criterion but still requires a human Mark complete decision."
+}

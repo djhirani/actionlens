@@ -1,0 +1,69 @@
+{
+  "fixtureId": "fixture-03",
+  "expected": {
+    "fixtureId": "fixture-03",
+    "kind": "document",
+    "expectedActionPresent": false,
+    "expectedActionKeywords": [],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": ["2026-07-18", "2026-07-24"],
+    "expectedExactEvidence": false,
+    "expectedHumanReview": true,
+    "expectedCompletionStatus": null,
+    "notes": "The one-action schema must ask which separate action to create and must not silently choose a date."
+  },
+  "proposal": {
+    "documentType": "Appointment and form notice",
+    "explanation": "The notice contains two explicitly separate required actions. A single action cannot be selected without clarification.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "uncertainty": {
+      "requiresHumanReview": true,
+      "conflicts": [
+        "Submit the online eligibility form by 22 July 2026.",
+        "Attend the review appointment on 24 July 2026 at 10:00."
+      ],
+      "clarificationQuestion": "Should the extracted action be the online form submission or attendance at the review appointment?"
+    },
+    "claims": []
+  },
+  "gated": {
+    "documentType": "Appointment and form notice",
+    "explanation": "The notice contains two explicitly separate required actions. A single action cannot be selected without clarification.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "evidence": [],
+    "blockedClaims": [],
+    "conflicts": [
+      "Submit the online eligibility form by 22 July 2026.",
+      "Attend the review appointment on 24 July 2026 at 10:00."
+    ],
+    "clarificationQuestion": "Should the extracted action be the online form submission or attendance at the review appointment?",
+    "requiresHumanReview": true,
+    "allRequiredClaimsVerified": false,
+    "canConfirm": false
+  },
+  "observation": {
+    "action": null,
+    "deadline": null,
+    "exactEvidence": false,
+    "humanReview": true,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-03",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

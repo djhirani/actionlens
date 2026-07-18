@@ -1,0 +1,314 @@
+{
+  "metadata": {
+    "runId": "2026-07-18T03-00-56-357Z",
+    "timestamp": "2026-07-18T03:00:56.357Z",
+    "model": "gpt-5.6",
+    "pipelineVersion": "stage-5-v1",
+    "sourceCommit": "209cdbb2ec026ffea6d27d9d69152fa670740496",
+    "workingTreeDirty": true
+  },
+  "metrics": {
+    "actionPrecision": {
+      "correct": 3,
+      "total": 3,
+      "percent": 100
+    },
+    "deadlinePrecision": {
+      "correct": 1,
+      "total": 1,
+      "percent": 100
+    },
+    "unsupportedDeadlineRefusal": {
+      "correct": 5,
+      "total": 5,
+      "percent": 100
+    },
+    "evidenceExactMatchSuccess": {
+      "correct": 4,
+      "total": 4,
+      "percent": 100
+    },
+    "ambiguityEscalation": {
+      "correct": 2,
+      "total": 2,
+      "percent": 100
+    },
+    "completionResultCorrectness": {
+      "correct": 2,
+      "total": 2,
+      "percent": 100
+    },
+    "inventedFactualClaimCount": 0,
+    "fixturesPassed": {
+      "correct": 7,
+      "total": 8,
+      "percent": 87.5
+    }
+  },
+  "cases": [
+    {
+      "expected": {
+        "fixtureId": "fixture-01",
+        "kind": "document",
+        "expectedActionPresent": true,
+        "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+        "expectedDeadlineDate": "2026-07-24",
+        "forbiddenDeadlineValues": [],
+        "expectedExactEvidence": true,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": null,
+        "notes": "A clear required action and deadline with source support."
+      },
+      "actual": {
+        "action": "Upload your sponsorship confirmation through the student portal.",
+        "deadline": "2026-07-24T23:59:59+01:00",
+        "exactEvidence": true,
+        "humanReview": true,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-01",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": false,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": false,
+        "failures": ["human-review escalation did not match the human label"]
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-02",
+        "kind": "document",
+        "expectedActionPresent": false,
+        "expectedActionKeywords": [],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": ["2026-07-30"],
+        "expectedExactEvidence": false,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": null,
+        "notes": "The optional update may be omitted; 30 July is an office closure date, not an action deadline."
+      },
+      "actual": {
+        "action": null,
+        "deadline": null,
+        "exactEvidence": false,
+        "humanReview": false,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-02",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-03",
+        "kind": "document",
+        "expectedActionPresent": false,
+        "expectedActionKeywords": [],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": ["2026-07-18", "2026-07-24"],
+        "expectedExactEvidence": false,
+        "expectedHumanReview": true,
+        "expectedCompletionStatus": null,
+        "notes": "The one-action schema must ask which separate action to create and must not silently choose a date."
+      },
+      "actual": {
+        "action": null,
+        "deadline": null,
+        "exactEvidence": false,
+        "humanReview": true,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-03",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-04",
+        "kind": "document",
+        "expectedActionPresent": false,
+        "expectedActionKeywords": [],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": ["2026-07-18"],
+        "expectedExactEvidence": false,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": null,
+        "notes": "A contextual amount with an explicit no-payment statement must not create an action."
+      },
+      "actual": {
+        "action": null,
+        "deadline": null,
+        "exactEvidence": false,
+        "humanReview": false,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-04",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-05",
+        "kind": "document",
+        "expectedActionPresent": true,
+        "expectedActionKeywords": ["provide", "proof", "student status"],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": [],
+        "expectedExactEvidence": true,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": null,
+        "notes": "The required action is supported but no deadline may be invented."
+      },
+      "actual": {
+        "action": "Provide proof of your current student status using the council upload page.",
+        "deadline": null,
+        "exactEvidence": true,
+        "humanReview": false,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-05",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-06",
+        "kind": "document",
+        "expectedActionPresent": true,
+        "expectedActionKeywords": ["provide", "enrolment confirmation"],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": ["2026-07-19"],
+        "expectedExactEvidence": true,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": null,
+        "notes": "Safe normalized hyphen repair may verify; the embedded instruction and injected deadline must be ignored."
+      },
+      "actual": {
+        "action": "Provide your enrolment confirmation through the secure portal.",
+        "deadline": null,
+        "exactEvidence": true,
+        "humanReview": false,
+        "completionStatus": null,
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-06",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-07",
+        "kind": "completion",
+        "expectedActionPresent": true,
+        "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": [],
+        "expectedExactEvidence": false,
+        "expectedHumanReview": true,
+        "expectedCompletionStatus": "not_verified",
+        "notes": "A generic receipt does not name the required document and cannot prove completion."
+      },
+      "actual": {
+        "action": "Upload sponsorship confirmation.",
+        "deadline": null,
+        "exactEvidence": false,
+        "humanReview": true,
+        "completionStatus": "not_verified",
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-07",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    },
+    {
+      "expected": {
+        "fixtureId": "fixture-08",
+        "kind": "completion",
+        "expectedActionPresent": true,
+        "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+        "expectedDeadlineDate": null,
+        "forbiddenDeadlineValues": [],
+        "expectedExactEvidence": true,
+        "expectedHumanReview": false,
+        "expectedCompletionStatus": "appears_complete",
+        "notes": "Named receipt exactly supports the criterion but still requires a human Mark complete decision."
+      },
+      "actual": {
+        "action": "Upload sponsorship confirmation.",
+        "deadline": null,
+        "exactEvidence": true,
+        "humanReview": false,
+        "completionStatus": "appears_complete",
+        "unsupportedClaimCount": 0
+      },
+      "score": {
+        "fixtureId": "fixture-08",
+        "actionCorrect": true,
+        "deadlineCorrect": true,
+        "evidenceCorrect": true,
+        "escalationCorrect": true,
+        "completionCorrect": true,
+        "inventedClaimCount": 0,
+        "passed": true,
+        "failures": []
+      }
+    }
+  ]
+}

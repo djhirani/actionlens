@@ -1,0 +1,121 @@
+{
+  "fixtureId": "fixture-01",
+  "expected": {
+    "fixtureId": "fixture-01",
+    "kind": "document",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+    "expectedDeadlineDate": "2026-07-24",
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "A clear required action and deadline with source support."
+  },
+  "proposal": {
+    "documentType": "Student Support Notice",
+    "explanation": "The notice requires the student to upload a sponsorship confirmation through the student portal by 24 July 2026 and retain the portal receipt as evidence of completion.",
+    "requiredAction": "Upload your sponsorship confirmation through the student portal.",
+    "deadline": "2026-07-24T23:59:59+01:00",
+    "consequence": null,
+    "completionCriteria": [
+      "The portal receipt confirms that the sponsorship document was uploaded."
+    ],
+    "uncertainty": {
+      "requiresHumanReview": true,
+      "conflicts": [
+        "The document gives the deadline date as 24 July 2026 but does not state an exact cutoff time; 23:59:59 Europe/London is an end-of-day interpretation."
+      ],
+      "clarificationQuestion": "Does “by 24 July 2026” mean by the end of that day in Europe/London time?"
+    },
+    "claims": [
+      {
+        "kind": "required_action",
+        "value": "Upload your sponsorship confirmation through the student portal.",
+        "quote": "You must upload your sponsorship confirmation through the student portal by 24 July 2026."
+      },
+      {
+        "kind": "deadline",
+        "value": "2026-07-24T23:59:59+01:00",
+        "quote": "by 24 July 2026"
+      },
+      {
+        "kind": "completion_criterion",
+        "value": "The portal receipt confirms that the sponsorship document was uploaded.",
+        "quote": "Keep the portal receipt as confirmation that the sponsorship document was uploaded."
+      }
+    ]
+  },
+  "gated": {
+    "documentType": "Student Support Notice",
+    "explanation": "The notice requires the student to upload a sponsorship confirmation through the student portal by 24 July 2026 and retain the portal receipt as evidence of completion.",
+    "requiredAction": "Upload your sponsorship confirmation through the student portal.",
+    "deadline": "2026-07-24T23:59:59+01:00",
+    "consequence": null,
+    "completionCriteria": [
+      "The portal receipt confirms that the sponsorship document was uploaded."
+    ],
+    "evidence": [
+      {
+        "quote": "You must upload your sponsorship confirmation through the student portal by 24 July 2026.",
+        "normalizedQuote": "You must upload your sponsorship confirmation through the student portal by 24 July 2026.",
+        "page": 1,
+        "charStart": 110,
+        "charEnd": 199,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "required_action",
+        "value": "Upload your sponsorship confirmation through the student portal."
+      },
+      {
+        "quote": "by 24 July 2026",
+        "normalizedQuote": "by 24 July 2026",
+        "page": 1,
+        "charStart": 183,
+        "charEnd": 198,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "deadline",
+        "value": "2026-07-24T23:59:59+01:00"
+      },
+      {
+        "quote": "Keep the portal receipt as confirmation that the sponsorship document was uploaded.",
+        "normalizedQuote": "Keep the portal receipt as confirmation that the sponsorship document was uploaded.",
+        "page": 1,
+        "charStart": 200,
+        "charEnd": 283,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "completion_criterion",
+        "value": "The portal receipt confirms that the sponsorship document was uploaded."
+      }
+    ],
+    "blockedClaims": [],
+    "conflicts": [
+      "The document gives the deadline date as 24 July 2026 but does not state an exact cutoff time; 23:59:59 Europe/London is an end-of-day interpretation."
+    ],
+    "clarificationQuestion": "Does “by 24 July 2026” mean by the end of that day in Europe/London time?",
+    "requiresHumanReview": true,
+    "allRequiredClaimsVerified": true,
+    "canConfirm": false
+  },
+  "observation": {
+    "action": "Upload your sponsorship confirmation through the student portal.",
+    "deadline": "2026-07-24T23:59:59+01:00",
+    "exactEvidence": true,
+    "humanReview": true,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-01",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": false,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": false,
+    "failures": ["human-review escalation did not match the human label"]
+  }
+}

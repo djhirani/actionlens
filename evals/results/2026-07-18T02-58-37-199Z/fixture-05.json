@@ -1,0 +1,97 @@
+{
+  "fixtureId": "fixture-05",
+  "expected": {
+    "fixtureId": "fixture-05",
+    "kind": "document",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["provide", "proof", "student status"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "The required action is supported but no deadline may be invented."
+  },
+  "proposal": {
+    "documentType": "Student status request",
+    "explanation": "The document asks the recipient to upload proof of current student status. It explicitly states that there is no deadline; a personal target date would not be an official deadline.",
+    "requiredAction": "Please provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": ["proof of your current student status"],
+    "uncertainty": {
+      "requiresHumanReview": false,
+      "conflicts": [],
+      "clarificationQuestion": null
+    },
+    "claims": [
+      {
+        "kind": "required_action",
+        "value": "Please provide proof of your current student status using the council upload page.",
+        "quote": "Please provide proof of your current student status using the council upload page."
+      },
+      {
+        "kind": "completion_criterion",
+        "value": "proof of your current student status",
+        "quote": "proof of your current student status"
+      }
+    ]
+  },
+  "gated": {
+    "documentType": "Student status request",
+    "explanation": "The document asks the recipient to upload proof of current student status. It explicitly states that there is no deadline; a personal target date would not be an official deadline.",
+    "requiredAction": "Please provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": ["proof of your current student status"],
+    "evidence": [
+      {
+        "quote": "Please provide proof of your current student status using the council upload page.",
+        "normalizedQuote": "Please provide proof of your current student status using the council upload page.",
+        "page": 1,
+        "charStart": 90,
+        "charEnd": 172,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "required_action",
+        "value": "Please provide proof of your current student status using the council upload page."
+      },
+      {
+        "quote": "proof of your current student status",
+        "normalizedQuote": "proof of your current student status",
+        "page": 1,
+        "charStart": 105,
+        "charEnd": 141,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "completion_criterion",
+        "value": "proof of your current student status"
+      }
+    ],
+    "blockedClaims": [],
+    "conflicts": [],
+    "clarificationQuestion": null,
+    "requiresHumanReview": false,
+    "allRequiredClaimsVerified": true,
+    "canConfirm": true
+  },
+  "observation": {
+    "action": "Please provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "exactEvidence": true,
+    "humanReview": false,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-05",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

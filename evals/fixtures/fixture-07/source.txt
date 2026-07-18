@@ -1,0 +1,6 @@
+Synthetic demonstration document — no real personal information.
+
+Original requirement: Upload sponsorship confirmation.
+
+Completion evidence:
+File uploaded successfully.

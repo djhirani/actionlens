@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-07",
+  "kind": "completion",
+  "expectedActionPresent": true,
+  "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": [],
+  "expectedExactEvidence": false,
+  "expectedHumanReview": true,
+  "expectedCompletionStatus": "not_verified",
+  "notes": "A generic receipt does not name the required document and cannot prove completion."
+}

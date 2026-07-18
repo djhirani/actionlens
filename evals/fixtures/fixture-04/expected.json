@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-04",
+  "kind": "document",
+  "expectedActionPresent": false,
+  "expectedActionKeywords": [],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": ["2026-07-18"],
+  "expectedExactEvidence": false,
+  "expectedHumanReview": false,
+  "expectedCompletionStatus": null,
+  "notes": "A contextual amount with an explicit no-payment statement must not create an action."
+}

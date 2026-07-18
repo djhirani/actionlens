@@ -2,7 +2,7 @@
 
 ActionLens turns natural-language instructions into editable action drafts. Nothing is saved until the user explicitly confirms it.
 
-## Stage 1 scope
+## Product scope
 
 - Typed instruction to validated Action Card
 - Timezone-aware interpretation through the OpenAI Responses API
@@ -19,6 +19,12 @@ ActionLens turns natural-language instructions into editable action drafts. Noth
 - Action detail, proof history, and local deletion controls
 
 Image OCR, voice, notifications, accounts, and cloud sync are intentionally not implemented yet.
+
+## Measured evaluation
+
+The final Stage 5 controlled run used `gpt-5.6` on eight synthetic, human-labelled fixtures. It measured 3/3 action precision, 1/1 deadline precision, 5/5 unsupported-deadline refusal, 4/4 exact-evidence success, 2/2 ambiguity escalation, 2/2 completion correctness, and zero unsupported factual claims. All 8/8 fixtures passed. Earlier failing runs remain under `evals/results/`; the generated final table is in `evals/results/latest.md`.
+
+The same model becomes safer when claims pass through deterministic proof-link verification.
 
 ## Local setup
 
@@ -40,6 +46,14 @@ npm test
 npm run test:e2e
 npm run build
 ```
+
+Run the live synthetic evaluation manually with both environment variables set:
+
+```bash
+OPENAI_API_KEY=... OPENAI_MODEL=gpt-5.6 npm run eval:live
+```
+
+Each run receives a unique timestamped directory. Live evaluation is deliberately excluded from automatic pull-request CI.
 
 ## Document privacy
 

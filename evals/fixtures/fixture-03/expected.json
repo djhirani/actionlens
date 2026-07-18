@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-03",
+  "kind": "document",
+  "expectedActionPresent": false,
+  "expectedActionKeywords": [],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": ["2026-07-18", "2026-07-24"],
+  "expectedExactEvidence": false,
+  "expectedHumanReview": true,
+  "expectedCompletionStatus": null,
+  "notes": "The one-action schema must ask which separate action to create and must not silently choose a date."
+}

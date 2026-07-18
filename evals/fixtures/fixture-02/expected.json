@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-02",
+  "kind": "document",
+  "expectedActionPresent": false,
+  "expectedActionKeywords": [],
+  "expectedDeadlineDate": null,
+  "forbiddenDeadlineValues": ["2026-07-30"],
+  "expectedExactEvidence": false,
+  "expectedHumanReview": false,
+  "expectedCompletionStatus": null,
+  "notes": "The optional update may be omitted; 30 July is an office closure date, not an action deadline."
+}

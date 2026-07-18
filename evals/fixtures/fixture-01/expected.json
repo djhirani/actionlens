@@ -1,0 +1,12 @@
+{
+  "fixtureId": "fixture-01",
+  "kind": "document",
+  "expectedActionPresent": true,
+  "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+  "expectedDeadlineDate": "2026-07-24",
+  "forbiddenDeadlineValues": [],
+  "expectedExactEvidence": true,
+  "expectedHumanReview": false,
+  "expectedCompletionStatus": null,
+  "notes": "A clear required action and deadline with source support."
+}

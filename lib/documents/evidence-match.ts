@@ -45,6 +45,17 @@ function nearMatch(source: string, quote: string) {
 
 export function matchEvidence(pages: SourcePage[], quote: string): EvidenceMatch {
   const normalizedQuote = normalizeText(quote);
+  if (!normalizedQuote) {
+    return {
+      quote,
+      normalizedQuote,
+      page: null,
+      charStart: null,
+      charEnd: null,
+      verificationStatus: "unsupported",
+      verificationReason: "An empty evidence quote cannot support a claim."
+    };
+  }
   for (const page of pages) {
     const normalizedPage = normalizeTextWithMap(page.text);
     const position = normalizedPage.normalized.indexOf(normalizedQuote);

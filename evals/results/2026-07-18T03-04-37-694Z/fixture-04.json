@@ -1,0 +1,63 @@
+{
+  "fixtureId": "fixture-04",
+  "expected": {
+    "fixtureId": "fixture-04",
+    "kind": "document",
+    "expectedActionPresent": false,
+    "expectedActionKeywords": [],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": ["2026-07-18"],
+    "expectedExactEvidence": false,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "A contextual amount with an explicit no-payment statement must not create an action."
+  },
+  "proposal": {
+    "documentType": "Annual policy statement",
+    "explanation": "The statement is informational only. It explicitly says that no payment is currently due and no action is needed.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "uncertainty": {
+      "requiresHumanReview": false,
+      "conflicts": [],
+      "clarificationQuestion": null
+    },
+    "claims": []
+  },
+  "gated": {
+    "documentType": "Annual policy statement",
+    "explanation": "The statement is informational only. It explicitly says that no payment is currently due and no action is needed.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "evidence": [],
+    "blockedClaims": [],
+    "conflicts": [],
+    "clarificationQuestion": null,
+    "requiresHumanReview": false,
+    "allRequiredClaimsVerified": false,
+    "canConfirm": false
+  },
+  "observation": {
+    "action": null,
+    "deadline": null,
+    "exactEvidence": false,
+    "humanReview": false,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-04",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

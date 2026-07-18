@@ -83,6 +83,6 @@ export function applyClaimGate(
     clarificationQuestion: proposal.uncertainty.clarificationQuestion,
     requiresHumanReview,
     allRequiredClaimsVerified,
-    canConfirm: allRequiredClaimsVerified && conflicts.length === 0
+    canConfirm: allRequiredClaimsVerified && !requiresHumanReview
   };
 }

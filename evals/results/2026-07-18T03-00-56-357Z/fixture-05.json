@@ -1,0 +1,101 @@
+{
+  "fixtureId": "fixture-05",
+  "expected": {
+    "fixtureId": "fixture-05",
+    "kind": "document",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["provide", "proof", "student status"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "The required action is supported but no deadline may be invented."
+  },
+  "proposal": {
+    "documentType": "Student status request",
+    "explanation": "The document asks the recipient to submit proof of current student status through the council upload page. It explicitly states that no deadline is given; a personal target date would not be an official deadline.",
+    "requiredAction": "Provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [
+      "Later evidence from the council upload page confirms that proof of current student status was uploaded."
+    ],
+    "uncertainty": {
+      "requiresHumanReview": false,
+      "conflicts": [],
+      "clarificationQuestion": null
+    },
+    "claims": [
+      {
+        "kind": "required_action",
+        "value": "Provide proof of your current student status using the council upload page.",
+        "quote": "Please provide proof of your current student status using the council upload page."
+      },
+      {
+        "kind": "completion_criterion",
+        "value": "Later evidence from the council upload page confirms that proof of current student status was uploaded.",
+        "quote": "Please provide proof of your current student status using the council upload page."
+      }
+    ]
+  },
+  "gated": {
+    "documentType": "Student status request",
+    "explanation": "The document asks the recipient to submit proof of current student status through the council upload page. It explicitly states that no deadline is given; a personal target date would not be an official deadline.",
+    "requiredAction": "Provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [
+      "Later evidence from the council upload page confirms that proof of current student status was uploaded."
+    ],
+    "evidence": [
+      {
+        "quote": "Please provide proof of your current student status using the council upload page.",
+        "normalizedQuote": "Please provide proof of your current student status using the council upload page.",
+        "page": 1,
+        "charStart": 90,
+        "charEnd": 172,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "required_action",
+        "value": "Provide proof of your current student status using the council upload page."
+      },
+      {
+        "quote": "Please provide proof of your current student status using the council upload page.",
+        "normalizedQuote": "Please provide proof of your current student status using the council upload page.",
+        "page": 1,
+        "charStart": 90,
+        "charEnd": 172,
+        "verificationStatus": "verified",
+        "verificationReason": "Exact match found after deterministic normalization.",
+        "kind": "completion_criterion",
+        "value": "Later evidence from the council upload page confirms that proof of current student status was uploaded."
+      }
+    ],
+    "blockedClaims": [],
+    "conflicts": [],
+    "clarificationQuestion": null,
+    "requiresHumanReview": false,
+    "allRequiredClaimsVerified": true,
+    "canConfirm": true
+  },
+  "observation": {
+    "action": "Provide proof of your current student status using the council upload page.",
+    "deadline": null,
+    "exactEvidence": true,
+    "humanReview": false,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-05",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

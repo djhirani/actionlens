@@ -57,3 +57,17 @@ Deleting an action requires explicit confirmation. The local repository deletes 
 - Image-only PDFs and OCR are not supported in Stage 2.
 - Image completion evidence and screenshots are not supported in Stage 3.
 - Local browser storage remains subject to browser storage controls and private-browsing restrictions.
+
+## Security and threat assumptions
+
+Uploaded and pasted content is attacker-controlled. ActionLens sends it only as bounded data under system instructions that explicitly reject embedded commands, role changes, and output-format demands. Model proposals are treated as untrusted too: deterministic code assigns quote status, refuses unsupported deadlines and claims, and recomputes completion status. A whitespace-only quote cannot verify, and a human-review signal prevents confirmation.
+
+The API key is read only in server code or by the explicit local evaluation runner. It is not returned to the browser, written to evaluation results, or logged by application code. API errors are converted to generic user messages. Request-byte, page, extracted-character, and file-size limits constrain accidental disclosure and basic cost abuse.
+
+ActionLens assumes the deployment server and the user's browser/device are trusted. It does not authenticate users, rate-limit across instances, scan documents for malware, establish document authenticity, or promise deletion from OpenAI's systems. Deployment operators must configure OpenAI data handling and retention appropriate to their environment. Public deployment should add infrastructure-level rate limits, quotas, monitoring that excludes document content, and abuse controls.
+
+Security headers prevent framing and disable camera, microphone, and geolocation. Model and source content is rendered by React as text; the application does not use `dangerouslySetInnerHTML`. These controls reduce common web risks but do not replace routine dependency and deployment review.
+
+## Synthetic evaluation retention
+
+Live evaluation uses only visibly marked synthetic demonstration documents. Each run stores raw structured model proposals and deterministic results in a unique repository directory, without credentials. These artifacts are suitable for audit but must not be reused with real personal data. Earlier failing runs remain visible; `latest` contains the final measured run rather than a hand-edited score.

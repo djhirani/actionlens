@@ -1,0 +1,71 @@
+{
+  "fixtureId": "fixture-03",
+  "expected": {
+    "fixtureId": "fixture-03",
+    "kind": "document",
+    "expectedActionPresent": false,
+    "expectedActionKeywords": [],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": ["2026-07-18", "2026-07-24"],
+    "expectedExactEvidence": false,
+    "expectedHumanReview": true,
+    "expectedCompletionStatus": null,
+    "notes": "The one-action schema must ask which separate action to create and must not silently choose a date."
+  },
+  "proposal": {
+    "documentType": "Appointment and form notice",
+    "explanation": "The notice contains two explicitly separate actions: submitting an online eligibility form and attending a review appointment. One action cannot be selected without clarification. The form’s due date gives no time of day, so it cannot be represented as a precise ISO 8601 datetime without inventing a time; the appointment date is not an action deadline.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "uncertainty": {
+      "requiresHumanReview": true,
+      "conflicts": [
+        "The document requires two separate actions: “Submit the online eligibility form by 22 July 2026” and “Attend your review appointment on 24 July 2026 at 10:00.”",
+        "The form due date specifies 22 July 2026 but no time of day or offset.",
+        "The review appointment date and time is an appointment, not an action deadline."
+      ],
+      "clarificationQuestion": "Which action should be analysed: submitting the eligibility form or attending the review appointment?"
+    },
+    "claims": []
+  },
+  "gated": {
+    "documentType": "Appointment and form notice",
+    "explanation": "The notice contains two explicitly separate actions: submitting an online eligibility form and attending a review appointment. One action cannot be selected without clarification. The form’s due date gives no time of day, so it cannot be represented as a precise ISO 8601 datetime without inventing a time; the appointment date is not an action deadline.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "evidence": [],
+    "blockedClaims": [],
+    "conflicts": [
+      "The document requires two separate actions: “Submit the online eligibility form by 22 July 2026” and “Attend your review appointment on 24 July 2026 at 10:00.”",
+      "The form due date specifies 22 July 2026 but no time of day or offset.",
+      "The review appointment date and time is an appointment, not an action deadline."
+    ],
+    "clarificationQuestion": "Which action should be analysed: submitting the eligibility form or attending the review appointment?",
+    "requiresHumanReview": true,
+    "allRequiredClaimsVerified": false,
+    "canConfirm": false
+  },
+  "observation": {
+    "action": null,
+    "deadline": null,
+    "exactEvidence": false,
+    "humanReview": true,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-03",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

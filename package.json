@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "eval:live": "tsx scripts/run-live-evals.ts"
   },
   "dependencies": {
     "dexie": "4.4.4",
@@ -27,8 +28,8 @@
     "zod": "4.4.3"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "4.3.3",
     "@playwright/test": "1.61.1",
+    "@tailwindcss/postcss": "4.3.3",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.2",
     "@types/node": "26.1.1",
@@ -41,6 +42,7 @@
     "jsdom": "29.1.1",
     "prettier": "3.9.5",
     "tailwindcss": "4.3.3",
+    "tsx": "^4.20.6",
     "typescript": "5.9.3",
     "vitest": "4.1.10"
   }

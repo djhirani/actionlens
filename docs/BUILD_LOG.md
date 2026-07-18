@@ -90,3 +90,39 @@ Image/OCR evidence, screenshots, voice, notifications, and Stage 4 inbox expansi
 - The existing two moderate PostCSS advisories remain transitive through Next.js 16.2.10; the breaking automated downgrade was not applied.
 
 Voice, notifications, image OCR, accounts, cloud sync, and Stage 5 eval work remain out of scope.
+
+## 2026-07-18 — Stage 5: Evals, security, and privacy
+
+- Added all eight visibly marked synthetic source fixtures and machine-readable human labels.
+- Added `npm run eval:live` with unique run directories, raw structured proposals, gated outputs, generated JSON/Markdown results, exact denominators, model ID, timestamp, pipeline version, and source commit.
+- Preserved the initial 3/8 run and post-fix 7/8 run rather than overwriting failures.
+- Strengthened untrusted-document prompt-injection instructions, date-only deadline handling, refusal gates, empty-quote rejection, request-body limits, sanitized failure paths, and browser security headers.
+- Added deterministic security, evaluation-scoring, prompt-injection, refusal, and malformed/oversized request tests.
+- Added lockfile-based GitHub Actions for format, lint, type checking, unit/integration tests, and production build. Live model evals are excluded from automatic CI.
+- Documented threat assumptions, cloud/local boundaries, deletion, cost-abuse limits, and deployment responsibilities.
+
+### Final measured live evaluation
+
+Controlled run `2026-07-18T03-04-37-694Z` used `gpt-5.6` and Stage 5 pipeline changes based on source commit `209cdbb`:
+
+- action precision: 3/3 (100%);
+- deadline precision: 1/1 (100%);
+- unsupported-deadline refusal: 5/5 (100%);
+- evidence exact-match success: 4/4 (100%);
+- ambiguity escalation: 2/2 (100%);
+- completion-result correctness: 2/2 (100%);
+- invented factual claim count: 0;
+- fixtures passed: 8/8 (100%).
+
+These are measured synthetic-fixture results, not a claim of general-world accuracy. The same model becomes safer when claims pass through deterministic proof-link verification.
+
+### Verification
+
+- `npm run format` / `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 14 files, 48 tests.
+- `npm run test:e2e` — final rerun passed: 3 Chromium tests. The first attempt passed 2/3 but its initial page load hit a stale React client manifest after Next.js selected a parent-directory lockfile as the workspace root; pinning `turbopack.root` to this repository and rebuilding the generated cache resolved it.
+- `npm run build` — passed with all static and dynamic routes generated.
+- `npm audit --audit-level=moderate` — reported two moderate PostCSS findings transitive through Next.js 16.2.10. The available force-fix would install the breaking and obsolete Next.js 9.3.3, so it was not applied.
+- Secret-pattern and unsafe-rendering review found no credential in evaluation artifacts, no application logging of document content, and no `dangerouslySetInnerHTML` use.

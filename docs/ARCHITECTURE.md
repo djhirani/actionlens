@@ -102,3 +102,23 @@ Completed actions therefore remain visible after closure. Grouping never changes
 Action details display due date, source verification, ambiguity, local status, completion criteria, and completion-check history. Permanent deletion requires a second explicit click and removes the Action Item and its completion checks in one IndexedDB transaction.
 
 Voice capture was intentionally omitted. The required inbox and proof loop are complete, while adding recording permissions, temporary audio handling, and another server route would add risk without improving the Stage 4 core outcome.
+
+## Stage 5 evaluation and hardening
+
+Eight synthetic fixtures pair original source text with machine-readable human labels. The manual live runner uses the production structured-output instructions, then passes proposals through the same deterministic claim and completion gates. It persists model proposals, gated results, field-level scores, counts, percentages, model ID, timestamp, pipeline version, and source commit in a unique run directory. It never persists the API key. Earlier runs are not overwritten; `latest.json` and `latest.md` are generated pointers to the most recent run.
+
+Metric denominators are explicit: action and deadline precision use document fixtures where the gated pipeline emitted those fields; refusal uses document fixtures labelled with no supported deadline; exact-match and escalation use fixtures carrying those positive labels; completion correctness uses the two completion fixtures. Invented factual claims count model-proposed claims whose quotes receive `unsupported` from deterministic matching.
+
+Document and completion text are untrusted data. Shared system instructions prohibit following embedded role changes, tool requests, or output-format demands. The model still cannot assign evidence verification or final completion status. Empty quotes are explicitly unsupported, any human-review signal blocks action confirmation, and only exact deterministic support passes the proof gate.
+
+API routes bound request bytes before Zod field/page/character validation and return generic errors rather than SDK details. Global response headers deny framing, MIME sniffing, camera, microphone, and geolocation, and constrain referrers, base URIs, and form targets. React renders model and document values as text; no unsafe HTML rendering path exists.
+
+GitHub Actions installs from the lockfile and runs formatting, lint, type checking, unit/integration tests, and a production build. Live OpenAI evaluation is intentionally manual so pull requests cannot consume a secret or incur model cost automatically.
+
+### Threat assumptions and limits
+
+- The server and deployment environment are trusted to protect `OPENAI_API_KEY`; browsers and uploaded content are not trusted.
+- Same-origin API routes are public demonstration endpoints. Byte limits reduce accidental or simple cost abuse, but there is no authentication, distributed rate limiting, quota, or bot protection.
+- Deterministic matching proves that a quote occurs in supplied text, not that the document is authentic, complete, current, or benign.
+- Browser-local IndexedDB data inherits the security and retention properties of the browser profile and device.
+- Dependency review is required continuously; automated breaking downgrades are not applied without compatibility review.
