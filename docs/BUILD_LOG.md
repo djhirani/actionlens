@@ -126,3 +126,24 @@ These are measured synthetic-fixture results, not a claim of general-world accur
 - `npm run build` — passed with all static and dynamic routes generated.
 - `npm audit --audit-level=moderate` — reported two moderate PostCSS findings transitive through Next.js 16.2.10. The available force-fix would install the breaking and obsolete Next.js 9.3.3, so it was not applied.
 - Secret-pattern and unsafe-rendering review found no credential in evaluation artifacts, no application logging of document content, and no `dangerouslySetInnerHTML` use.
+
+## 2026-07-18 — Stage 6: Prize-quality UX and demo path
+
+- Rebuilt the presentation around a white central surface, deep navy/ink typography, strong blue actions, amber ambiguity, and red blocked/unsupported states.
+- Refined the signature Evidence Bridge with an exact-quote label, highlighted source evidence, verification badge, and source-to-card desktop/mobile reading order.
+- Added a coherent 30-second judge path with synthetic refusal, source-verified document, weak proof, strong proof, human closure, and Inbox display.
+- Added demo-only reset that removes the fixed synthetic action and its proof history without touching user actions.
+- Polished privacy, honest extraction/analysis/evidence-check progress, unsupported/error/offline messaging, empty states, and mobile controls.
+- Added skip navigation, visible focus, reduced motion, large tap targets, semantic status announcements, and automated axe coverage.
+- Preserved the Stage 5 proof loop, deterministic verification, refusal rules, Evidence Bridge semantics, and human-only closure.
+
+### Verification
+
+- `npm run format` / `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 14 files, 48 tests.
+- `npm run test:e2e` — passed: 6 Chromium tests. This includes desktop/mobile axe scans, keyboard skip-link focus, the existing refusal and Proof of Done flows, and the complete built-in judge path repeated three consecutive times.
+- Desktop screenshots at 1440px and mobile screenshots at 390px were captured and visually inspected for the home surface, verified Evidence Bridge, refusal state, and strong Proof of Done state.
+- `npm run build` — passed with all static and dynamic routes generated.
+- Dependency installation continued to report the two known moderate PostCSS advisories transitive through Next.js 16.2.10; no breaking forced downgrade was applied.

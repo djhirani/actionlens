@@ -2,6 +2,7 @@
 import { useRef, useState } from "react";
 import { EvidenceBridge } from "@/components/evidence-bridge";
 import { getBaitFixtureResult } from "@/lib/demo/bait-fixture";
+import { getVerifiedFixtureResult } from "@/lib/demo/verified-fixture";
 import { actionRepository } from "@/lib/db";
 import { extractPdfText } from "@/lib/documents/extract-pdf";
 import { hashSourcePages } from "@/lib/documents/hash";
@@ -55,17 +56,27 @@ export function DocumentCheck() {
         );
       setResult(DocumentAnalysisResultSchema.parse(data));
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Document analysis failed.");
+      setError(
+        caught instanceof TypeError
+          ? "The analysis could not reach ActionLens. Check your connection and try again."
+          : caught instanceof Error
+            ? caught.message
+            : "Document analysis failed."
+      );
     } finally {
       releaseFile();
       setState("idle");
     }
   }
 
-  function loadDemo() {
+  function loadDemo(kind: "bait" | "verified") {
     setError(null);
     setFileName(null);
-    setResult(getBaitFixtureResult() as DocumentAnalysisResult);
+    setResult(
+      (kind === "bait"
+        ? getBaitFixtureResult()
+        : getVerifiedFixtureResult()) as DocumentAnalysisResult
+    );
     releaseFile();
     setState("idle");
   }
@@ -127,12 +138,12 @@ export function DocumentCheck() {
   }
 
   return (
-    <section className="document-workspace" aria-labelledby="document-heading">
+    <section className="document-workspace" id="document-check" aria-labelledby="document-heading">
       <div className="card document-input">
         <p className="eyebrow">Proof-Linked Actions</p>
         <h2 id="document-heading">Check a document</h2>
-        <div className="privacy-sheet">
-          <strong>Before you continue</strong>
+        <div className="privacy-sheet" role="note" aria-label="Document privacy">
+          <strong>Your document, handled deliberately</strong>
           <ul>
             <li>Text is extracted locally from a text-based PDF.</li>
             <li>Relevant extracted text is sent to OpenAI for analysis.</li>
@@ -172,10 +183,30 @@ export function DocumentCheck() {
                 ? "Verifying claims…"
                 : "Analyse document"}
           </button>
-          <button className="button secondary" type="button" onClick={loadDemo}>
+          <button className="button secondary" type="button" onClick={() => loadDemo("bait")}>
             Try the “No deadline stated” demo
           </button>
+          <button className="button ghost" type="button" onClick={() => loadDemo("verified")}>
+            Try a source-verified action
+          </button>
         </div>
+        {state === "extracting" || state === "analysing" ? (
+          <div className="work-status" role="status" aria-live="polite">
+            <span className="spinner dark" aria-hidden="true" />
+            <div>
+              <strong>
+                {state === "extracting"
+                  ? "Extracting text in this browser"
+                  : "Analysing claims and verifying exact quotes"}
+              </strong>
+              <small>
+                {state === "extracting"
+                  ? "The original PDF stays local and is not saved."
+                  : "Extracted text is sent to OpenAI; deterministic code checks the response."}
+              </small>
+            </div>
+          </div>
+        ) : null}
         {error ? (
           <p className="error" role="alert">
             {error}

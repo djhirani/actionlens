@@ -9,19 +9,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB">
+    <html lang="en-GB" data-scroll-behavior="smooth">
       <body>
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
         <div className="shell">
           <header className="nav">
             <Link className="brand" href="/">
-              ActionLens
+              <span className="brand-mark" aria-hidden="true">
+                A
+              </span>
+              <span>ActionLens</span>
             </Link>
             <nav className="navlinks" aria-label="Primary navigation">
               <Link href="/">Home</Link>
               <Link href="/inbox">Action Inbox</Link>
             </nav>
           </header>
-          {children}
+          <div id="main-content">{children}</div>
         </div>
       </body>
     </html>

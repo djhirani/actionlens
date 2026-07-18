@@ -44,3 +44,40 @@ test("strong proof appears complete but waits for human closure", async ({ page 
   await page.getByRole("tab", { name: /Completed/ }).click();
   await expect(page.getByRole("heading", { name: "No completed actions" })).toBeVisible();
 });
+
+test("the complete built-in judge path is repeatable three times", async ({ page }) => {
+  test.setTimeout(90_000);
+  for (let run = 1; run <= 3; run += 1) {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Reset demo data" }).click();
+    await expect(page.getByRole("status")).toContainText("Synthetic demo action");
+
+    await page.getByRole("button", { name: "Try the “No deadline stated” demo" }).click();
+    await expect(page.getByRole("heading", { name: "No required action found" })).toBeVisible();
+    await expect(page.getByText("No reminder created.")).toBeVisible();
+
+    await page.getByRole("button", { name: "Try a source-verified action" }).click();
+    await expect(
+      page.getByRole("heading", {
+        name: "Upload your sponsorship confirmation through the student portal."
+      })
+    ).toBeVisible();
+    await expect(page.getByText("✓ Source verified")).toBeVisible();
+    await page.getByRole("button", { name: "Confirm Proof-Linked Action" }).click();
+    await expect(page.getByText("Proof-Linked Action confirmed and saved locally.")).toBeVisible();
+
+    await page.goto("/proof-demo");
+    await page.getByRole("button", { name: "Try weak evidence" }).click();
+    await expect(page.getByRole("heading", { name: "Not verified" })).toBeVisible();
+    await page.getByRole("button", { name: "Try strong evidence" }).click();
+    await expect(page.getByRole("heading", { name: "Appears complete" })).toBeVisible();
+    await page.getByRole("button", { name: "Mark complete" }).click();
+    await expect(page.getByRole("status")).toContainText("Marked complete");
+
+    await page.goto("/inbox");
+    await page.getByRole("tab", { name: /Completed/ }).click();
+    await expect(
+      page.getByRole("heading", { name: "Upload sponsorship confirmation" })
+    ).toBeVisible();
+  }
+});

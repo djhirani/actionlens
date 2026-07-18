@@ -30,7 +30,13 @@ export function ActionCapture() {
         );
       setDraft(ActionItemSchema.parse(data));
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Could not prepare the draft.");
+      setError(
+        caught instanceof TypeError
+          ? "The draft could not reach ActionLens. Check your connection and try again."
+          : caught instanceof Error
+            ? caught.message
+            : "Could not prepare the draft."
+      );
     } finally {
       setState("idle");
     }

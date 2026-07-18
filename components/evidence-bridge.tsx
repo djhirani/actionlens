@@ -1,7 +1,10 @@
 import type { DocumentAnalysisResult } from "@/lib/schemas";
 
 function SourceExcerpt({ result }: { result: DocumentAnalysisResult }) {
-  const evidence = result.evidence.find((item) => item.verificationStatus === "verified");
+  const evidence =
+    result.evidence.find(
+      (item) => item.kind === "required_action" && item.verificationStatus === "verified"
+    ) ?? result.evidence.find((item) => item.verificationStatus === "verified");
   const page = result.source.pages.find((item) => item.pageNumber === (evidence?.page ?? 1));
   if (!page) return <p className="muted">No source excerpt available.</p>;
   if (evidence?.charStart == null || evidence.charEnd == null)
@@ -24,15 +27,23 @@ export function EvidenceBridge({ result }: { result: DocumentAnalysisResult }) {
   return (
     <section className="evidence-bridge" aria-labelledby="evidence-heading">
       <div className="bridge-source">
-        <p className="eyebrow">Source · {result.source.displayName}</p>
-        <h2 id="evidence-heading">Verified excerpt</h2>
+        <p className="eyebrow">Source document</p>
+        <h2 id="evidence-heading">{result.source.displayName}</h2>
+        <p className="bridge-caption">The highlighted words are the model’s proposed evidence.</p>
         <SourceExcerpt result={result} />
       </div>
       <div className="bridge-arrow" aria-hidden="true">
-        →
+        <span>Exact quote</span>
+        <b>→</b>
       </div>
       <div className="bridge-action">
-        <span className={`status ${result.canConfirm ? "" : "review"}`}>{badge}</span>
+        <p className="eyebrow">Proposed Action Card</p>
+        <span
+          className={`status ${primaryEvidence?.verificationStatus === "verified" ? "source-status" : "blocked-status"}`}
+        >
+          {primaryEvidence?.verificationStatus === "verified" ? "✓ " : "× "}
+          {badge}
+        </span>
         <h2>{result.requiredAction ?? "No required action found"}</h2>
         <dl className="details">
           <div className="detail">
@@ -73,7 +84,7 @@ export function EvidenceBridge({ result }: { result: DocumentAnalysisResult }) {
           </div>
         ))}
         {result.blockedClaims.length ? (
-          <div className="error">
+          <div className="ambiguity-panel">
             <strong>Blocked claims</strong>
             <br />
             {result.blockedClaims.join("; ")}

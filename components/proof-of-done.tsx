@@ -76,7 +76,13 @@ export function ProofOfDone({
         );
       await storeResult(CompletionAnalysisResultSchema.parse(data));
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : "Completion check failed.");
+      setError(
+        caught instanceof TypeError
+          ? "The completion check could not reach ActionLens. Check your connection and try again."
+          : caught instanceof Error
+            ? caught.message
+            : "Completion check failed."
+      );
     } finally {
       setBusy(false);
       releaseFile();
@@ -201,6 +207,15 @@ export function ProofOfDone({
           <p className="error" role="alert">
             {error}
           </p>
+        ) : null}
+        {busy ? (
+          <div className="work-status" role="status" aria-live="polite">
+            <span className="spinner dark" aria-hidden="true" />
+            <div>
+              <strong>Checking completion evidence</strong>
+              <small>Matching the submitted source against every required criterion.</small>
+            </div>
+          </div>
         ) : null}
       </div>
       {result ? (

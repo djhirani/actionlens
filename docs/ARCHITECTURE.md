@@ -122,3 +122,13 @@ GitHub Actions installs from the lockfile and runs formatting, lint, type checki
 - Deterministic matching proves that a quote occurs in supplied text, not that the document is authentic, complete, current, or benign.
 - Browser-local IndexedDB data inherits the security and retention properties of the browser profile and device.
 - Dependency review is required continuously; automated breaking downgrades are not applied without compatibility review.
+
+## Stage 6 experience layer
+
+Stage 6 changes presentation and demo orchestration only. The underlying schemas, refusal gate, deterministic quote matcher, completion gate, and human-controlled persistence transitions are unchanged.
+
+The interface uses one high-contrast white central surface with a deep ink navigation shell. Blue identifies primary actions and the Evidence Bridge connector, amber is reserved for ambiguity and required review, and red is reserved for blocked or unsupported evidence. The responsive Evidence Bridge renders source text, a labeled exact-quote connector, and the proposed Action Card side by side on desktop and in that reading order on mobile.
+
+The built-in judge path uses synthetic deterministic fixtures: a contextual-date refusal, a fully source-verified action, weak completion evidence, and strong completion evidence. Reset deletes only the fixed synthetic Proof of Done action and its history; it does not clear user-created actions. Loading copy maps to real local extraction or combined server analysis/deterministic verification work and never presents a fabricated percentage.
+
+Accessibility protections include a skip link, semantic landmarks and labels, visible focus, 44–48px interactive targets, live status/error regions, text labels alongside colour, reduced-motion handling, responsive source order, and automated axe checks at desktop and mobile widths.

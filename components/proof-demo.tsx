@@ -4,6 +4,7 @@ import { ProofOfDone } from "@/components/proof-of-done";
 import { actionRepository, completionRepository } from "@/lib/db";
 import { PROOF_DEMO_ACTION } from "@/lib/demo/proof-fixtures";
 import type { CompletionCheck } from "@/lib/schemas";
+import { DemoReset } from "@/components/demo-reset";
 
 export function ProofDemo() {
   const [history, setHistory] = useState<CompletionCheck[] | null>(null);
@@ -28,6 +29,21 @@ export function ProofDemo() {
           Compare a generic upload receipt with a confirmation that names the required sponsorship
           document.
         </p>
+        <div className="demo-steps" aria-label="Proof of Done demo steps">
+          <span>
+            <b>1</b> Try weak evidence
+          </span>
+          <span>
+            <b>2</b> Try strong evidence
+          </span>
+          <span>
+            <b>3</b> Mark complete
+          </span>
+          <span>
+            <b>4</b> View in Inbox
+          </span>
+        </div>
+        <DemoReset reloadAfter />
       </section>
       <ProofOfDone action={PROOF_DEMO_ACTION} initialHistory={history} demo />
     </>
