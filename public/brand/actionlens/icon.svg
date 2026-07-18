@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="actionlens-icon-title actionlens-icon-description">
+  <title id="actionlens-icon-title">ActionLens Evidence Aperture icon</title>
+  <desc id="actionlens-icon-description">Two evidence lines enter an A-shaped lens and lead to a compact verified action.</desc>
+  <rect width="256" height="256" rx="48" fill="#fff"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 108h48M24 148h48" stroke="#0B1736" stroke-width="15"/>
+    <circle cx="116" cy="128" r="58" fill="#2563EB"/>
+    <path d="m116 95-27 66m27-66 27 66M99 138h34" stroke="#fff" stroke-width="13"/>
+    <path d="M174 128h8" stroke="#2563EB" stroke-width="12"/>
+    <rect x="182" y="101" width="50" height="54" rx="11" fill="#fff" stroke="#0B1736" stroke-width="11"/>
+    <path d="m194 128 8 8 17-19" stroke="#2563EB" stroke-width="8"/>
+  </g>
+</svg>

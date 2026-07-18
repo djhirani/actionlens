@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="112" viewBox="0 0 420 112" role="img" aria-labelledby="actionlens-dark-title actionlens-dark-description">
+  <title id="actionlens-dark-title">ActionLens Evidence Aperture logo on dark background</title>
+  <desc id="actionlens-dark-description">Two evidence lines enter a blue circular lens containing a simplified A, then emerge as a verified action.</desc>
+  <rect width="420" height="112" rx="16" fill="#0B1736"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 45h34M12 67h34" stroke="#fff" stroke-width="7"/>
+    <circle cx="72" cy="56" r="31" fill="#2563EB"/>
+    <path d="m72 40-14 34m14-34 14 34M63 62h18" stroke="#fff" stroke-width="6"/>
+    <path d="M103 56h9" stroke="#2563EB" stroke-width="6"/>
+    <rect x="112" y="40" width="34" height="32" rx="7" stroke="#fff" stroke-width="5"/>
+    <path d="m120 56 5 5 12-12" stroke="#2563EB" stroke-width="4.5"/>
+  </g>
+  <text x="174" y="68" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="38" font-weight="750" letter-spacing="-1.8">Action<tspan fill="#2563EB">Lens</tspan></text>
+</svg>

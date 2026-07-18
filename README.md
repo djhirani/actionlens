@@ -1,5 +1,7 @@
 # ActionLens
 
+![ActionLens logo](public/brand/actionlens/logo-horizontal.svg)
+
 **ActionLens turns everyday instructions and text-based PDFs into proof-linked actions, refuses unsupported deadlines, and checks completion evidence before a human closes the task.**
 
 Built with GPT-5.6 and Codex for OpenAI Build Week 2026.
