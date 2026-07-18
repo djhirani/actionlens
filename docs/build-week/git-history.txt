@@ -1,3 +1,4 @@
+d229047 | 2026-07-18 09:53:03 +0100 | docs: add Build Week development evidence
 9bad061 | 2026-07-18 09:41:26 +0100 | feat: polish proof-linked action experience for demo
 cf5be16 | 2026-07-18 04:13:58 +0100 | test: add reproducible proof-loop evals and hardening
 209cdbb | 2026-07-18 03:44:30 +0100 | feat: add local action inbox and proof history

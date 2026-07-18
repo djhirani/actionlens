@@ -207,7 +207,7 @@ async function main() {
 - Timestamp: ${metadata.timestamp}
 - Model: ${metadata.model}
 - Pipeline: ${metadata.pipelineVersion}
-- Source commit: ${metadata.sourceCommit}${dirty ? " (working tree had Stage 5 changes)" : ""}
+- Source commit: ${metadata.sourceCommit}${dirty ? " (working tree had uncommitted changes)" : ""}
 - Fixture data: synthetic only; no real personal information
 
 | Fixture | Action | Deadline | Evidence | Escalation | Completion | Invented claims | Result |

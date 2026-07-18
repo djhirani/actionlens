@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "eval:live": "tsx scripts/run-live-evals.ts"
+    "eval:live": "tsx scripts/run-live-evals.ts",
+    "smoke:live": "tsx scripts/smoke-deployed.ts"
   },
   "dependencies": {
     "dexie": "4.4.4",

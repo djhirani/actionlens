@@ -1,0 +1,63 @@
+{
+  "fixtureId": "fixture-02",
+  "expected": {
+    "fixtureId": "fixture-02",
+    "kind": "document",
+    "expectedActionPresent": false,
+    "expectedActionKeywords": [],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": ["2026-07-30"],
+    "expectedExactEvidence": false,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": null,
+    "notes": "The optional update may be omitted; 30 July is an office closure date, not an action deadline."
+  },
+  "proposal": {
+    "documentType": "Contact Information Notice",
+    "explanation": "The notice says contact details may be updated at the recipient’s convenience and explicitly describes the update as optional. The office closure date is not an action deadline.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "uncertainty": {
+      "requiresHumanReview": false,
+      "conflicts": [],
+      "clarificationQuestion": null
+    },
+    "claims": []
+  },
+  "gated": {
+    "documentType": "Contact Information Notice",
+    "explanation": "The notice says contact details may be updated at the recipient’s convenience and explicitly describes the update as optional. The office closure date is not an action deadline.",
+    "requiredAction": null,
+    "deadline": null,
+    "consequence": null,
+    "completionCriteria": [],
+    "evidence": [],
+    "blockedClaims": [],
+    "conflicts": [],
+    "clarificationQuestion": null,
+    "requiresHumanReview": false,
+    "allRequiredClaimsVerified": false,
+    "canConfirm": false
+  },
+  "observation": {
+    "action": null,
+    "deadline": null,
+    "exactEvidence": false,
+    "humanReview": false,
+    "completionStatus": null,
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-02",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

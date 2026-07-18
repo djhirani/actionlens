@@ -9,3 +9,4 @@ test-results/
 .DS_Store
 ActionLens_Codex_Build_Pack.zip
 ActionLens_Codex_Build_Pack/
+.vercel

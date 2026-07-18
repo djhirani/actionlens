@@ -147,3 +147,40 @@ These are measured synthetic-fixture results, not a claim of general-world accur
 - Desktop screenshots at 1440px and mobile screenshots at 390px were captured and visually inspected for the home surface, verified Evidence Bridge, refusal state, and strong Proof of Done state.
 - `npm run build` — passed with all static and dynamic routes generated.
 - Dependency installation continued to report the two known moderate PostCSS advisories transitive through Next.js 16.2.10; no breaking forced downgrade was applied.
+
+## 2026-07-18 — Stage 7: Deployment and submission package
+
+- Starting commit: `d229047`; final Stage 7 commit is the commit containing this entry and is reported in the completion report.
+- Rewrote the README for judge scanning with the problem, Proof Loop, architecture, setup, environment boundaries, commands, live path, measured results, privacy, GPT-5.6/Codex roles, human decisions, dated milestones, synthetic notice, limitations, and licence.
+- Added an MIT licence, Vercel deployment runbook/evidence, under-three-minute narrated script, exact click path, product-accurate Devpost copy, submission checklist, and Codex evidence file.
+- Preserved primary Codex thread `019f72a7-65bd-7071-8682-10b3b216d4af`; left the `/feedback` ID explicitly pending rather than inventing it.
+- Linked Vercel project `hirani/actionlens` and configured production-only `OPENAI_API_KEY` and `OPENAI_MODEL` without storing values.
+- Kept the GitHub repository private; owner must choose public visibility or rule-compliant private judge access before submission.
+- Ran final live evaluation `2026-07-18T09-08-22-425Z`: 8/8 fixtures passed, all requested metric counts were 100%, and unsupported factual claim count was zero.
+
+### Owner decisions
+
+- No completed product stage was redesigned or reopened.
+- No excluded voice, OCR, notification, account, provider-routing, or cloud-sync feature was added.
+- Repository visibility and OpenAI budget level remain owner-controlled external decisions.
+
+### Codex contribution
+
+Codex audited release readiness, prepared submission materials from actual product behavior, configured the authenticated deployment target, ran the final deterministic and live verification, deployed/smoke-tested where credentials allowed, and recorded blockers and manual handoff steps without fabricating evidence.
+
+### Known limitation
+
+The repository is private and Vercel Git integration could not connect because the authenticated Vercel GitHub identity lacks access. CLI deployment remains available. The `/feedback` action must be run manually in the primary Codex thread.
+
+### Verification
+
+- `npm run format` / `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 14 files, 48 tests.
+- `npm run test:e2e` — passed: 6 Chromium tests, including axe checks and the complete judge path repeated three times.
+- `npm run eval:live` — final controlled run passed 8/8 with zero unsupported factual claims.
+- `npm run build` — passed locally; Vercel’s independent production build also passed.
+- `npm audit --audit-level=moderate` — the two documented Next.js-transitive PostCSS advisories remain; the unsafe breaking force-fix was not applied.
+- Vercel deployment `dpl_FqcEms8E9pAdGFHSQZw6H8MpkVju` — READY at `https://actionlens-five.vercel.app`.
+- `npm run smoke:live` against production — 3/3 complete synthetic flows passed; API sanitisation passed.

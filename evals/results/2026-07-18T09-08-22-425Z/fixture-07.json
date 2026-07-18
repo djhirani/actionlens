@@ -1,0 +1,64 @@
+{
+  "fixtureId": "fixture-07",
+  "expected": {
+    "fixtureId": "fixture-07",
+    "kind": "completion",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": false,
+    "expectedHumanReview": true,
+    "expectedCompletionStatus": "not_verified",
+    "notes": "A generic receipt does not name the required document and cannot prove completion."
+  },
+  "proposal": {
+    "proposedStatus": "not_verified",
+    "matchedCriteria": [],
+    "missingCriteria": ["sponsorship-upload"],
+    "uncertaintyReasons": [
+      "The evidence is a generic upload receipt and does not name the sponsorship confirmation document."
+    ],
+    "explanation": "The text “File uploaded successfully.” does not identify which file was uploaded, so it does not support the criterion requiring evidence that specifically names the sponsorship confirmation document as uploaded or received.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance."
+  },
+  "gated": {
+    "id": "4b7f6d6d-350d-4bb2-aaf0-3d3fda2a0b15",
+    "actionId": "00000000-0000-4000-8000-000000000007",
+    "status": "not_verified",
+    "matchedCriteria": [],
+    "missingCriteria": ["sponsorship-upload"],
+    "uncertaintyReasons": [
+      "The evidence is a generic upload receipt and does not name the sponsorship confirmation document."
+    ],
+    "explanation": "The text “File uploaded successfully.” does not identify which file was uploaded, so it does not support the criterion requiring evidence that specifically names the sponsorship confirmation document as uploaded or received.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance.",
+    "source": {
+      "displayName": "Synthetic completion evidence",
+      "sourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "retained": false,
+      "excerptsSaved": false
+    },
+    "userDecision": "pending",
+    "createdAt": "2026-07-18T09:09:03.569Z"
+  },
+  "observation": {
+    "action": "Upload sponsorship confirmation.",
+    "deadline": null,
+    "exactEvidence": false,
+    "humanReview": true,
+    "completionStatus": "not_verified",
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-07",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}

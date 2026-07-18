@@ -1,0 +1,80 @@
+{
+  "fixtureId": "fixture-08",
+  "expected": {
+    "fixtureId": "fixture-08",
+    "kind": "completion",
+    "expectedActionPresent": true,
+    "expectedActionKeywords": ["upload", "sponsorship confirmation"],
+    "expectedDeadlineDate": null,
+    "forbiddenDeadlineValues": [],
+    "expectedExactEvidence": true,
+    "expectedHumanReview": false,
+    "expectedCompletionStatus": "appears_complete",
+    "notes": "Named receipt exactly supports the criterion but still requires a human Mark complete decision."
+  },
+  "proposal": {
+    "proposedStatus": "appears_complete",
+    "matchedCriteria": [
+      {
+        "criterionId": "sponsorship-upload",
+        "explanation": "The evidence specifically states that the Sponsorship Confirmation document was received.",
+        "quote": "We received your Sponsorship Confirmation document on 20 July 2026."
+      }
+    ],
+    "missingCriteria": [],
+    "uncertaintyReasons": [],
+    "explanation": "The submitted evidence appears to satisfy the required upload criterion because it names the specific document and confirms receipt.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance."
+  },
+  "gated": {
+    "id": "15b3145d-3e00-4cd5-b294-fd51e6371f23",
+    "actionId": "00000000-0000-4000-8000-000000000007",
+    "status": "appears_complete",
+    "matchedCriteria": [
+      {
+        "criterionId": "sponsorship-upload",
+        "explanation": "The evidence specifically states that the Sponsorship Confirmation document was received.",
+        "evidence": {
+          "quote": "We received your Sponsorship Confirmation document on 20 July 2026.",
+          "normalizedQuote": "We received your Sponsorship Confirmation document on 20 July 2026.",
+          "page": 1,
+          "charStart": 0,
+          "charEnd": 67,
+          "verificationStatus": "verified",
+          "verificationReason": "Exact match found after deterministic normalization."
+        }
+      }
+    ],
+    "missingCriteria": [],
+    "uncertaintyReasons": [],
+    "explanation": "The submitted evidence appears to satisfy the required upload criterion because it names the specific document and confirms receipt.",
+    "disclaimer": "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance.",
+    "source": {
+      "displayName": "Synthetic completion evidence",
+      "sourceHash": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "retained": false,
+      "excerptsSaved": false
+    },
+    "userDecision": "pending",
+    "createdAt": "2026-07-18T09:09:06.245Z"
+  },
+  "observation": {
+    "action": "Upload sponsorship confirmation.",
+    "deadline": null,
+    "exactEvidence": true,
+    "humanReview": false,
+    "completionStatus": "appears_complete",
+    "unsupportedClaimCount": 0
+  },
+  "score": {
+    "fixtureId": "fixture-08",
+    "actionCorrect": true,
+    "deadlineCorrect": true,
+    "evidenceCorrect": true,
+    "escalationCorrect": true,
+    "completionCorrect": true,
+    "inventedClaimCount": 0,
+    "passed": true,
+    "failures": []
+  }
+}
