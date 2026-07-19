@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ActionCapture } from "@/components/action-capture";
 import { actionRepository, getDatabase, resetDatabaseForTests } from "@/lib/db";
@@ -61,5 +61,50 @@ describe("human confirmation flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Discard" }));
     expect(screen.getByText("Nothing is saved yet.")).toBeInTheDocument();
     expect(await actionRepository.count()).toBe(0);
+  });
+  it("transcribes microphone speech into the instruction field", async () => {
+    let emitResult:
+      | ((event: { results: ArrayLike<{ 0?: { transcript: string } }> }) => void)
+      | null = null;
+    let emitEnd: (() => void) | null = null;
+    class MockSpeechRecognition {
+      continuous = false;
+      interimResults = false;
+      lang = "";
+      get onresult() {
+        return emitResult;
+      }
+      set onresult(value) {
+        emitResult = value;
+      }
+      onerror: ((event: { error: string }) => void) | null = null;
+      get onend() {
+        return emitEnd;
+      }
+      set onend(value) {
+        emitEnd = value;
+      }
+      start() {}
+      stop() {
+        emitEnd?.();
+      }
+    }
+    Object.defineProperty(window, "SpeechRecognition", {
+      configurable: true,
+      value: MockSpeechRecognition
+    });
+    render(<ActionCapture />);
+    await waitFor(() => expect(screen.getByRole("button", { name: "🎙 Speak" })).toBeEnabled());
+    fireEvent.click(screen.getByRole("button", { name: "🎙 Speak" }));
+    act(() => {
+      emitResult?.({
+        results: [{ 0: { transcript: "Call the university tomorrow" } }]
+      });
+      emitEnd?.();
+    });
+
+    expect(screen.getByLabelText("Instruction")).toHaveValue("Call the university tomorrow");
+    expect(screen.getByRole("button", { name: "Prepare action" })).toBeEnabled();
+    delete (window as Window & { SpeechRecognition?: unknown }).SpeechRecognition;
   });
 });

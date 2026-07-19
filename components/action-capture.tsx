@@ -1,11 +1,33 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActionCard } from "@/components/action-card";
 import { ScamNotice } from "@/components/scam-notice";
 import { actionRepository } from "@/lib/db";
 import { requestScamCheck, NO_SCAM_RISK } from "@/lib/scam/client";
 import { ActionItemSchema, type ActionItem, type ScamAssessment } from "@/lib/schemas";
 import { getTimeContext } from "@/lib/time-context";
+
+type SpeechResultEvent = {
+  results: ArrayLike<{ 0?: { transcript: string } }>;
+};
+
+type SpeechRecognitionInstance = {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onresult: ((event: SpeechResultEvent) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionInstance;
+
+type SpeechWindow = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
 
 export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?: boolean }) {
   const [instruction, setInstruction] = useState("");
@@ -14,6 +36,64 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
   const [state, setState] = useState<"idle" | "loading" | "saved">("idle");
   const [error, setError] = useState<string | null>(null);
   const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
+  const [speechSupported, setSpeechSupported] = useState<boolean | null>(null);
+  const [listening, setListening] = useState(false);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const speechBaseRef = useRef("");
+
+  useEffect(() => {
+    return () => recognitionRef.current?.stop();
+  }, []);
+
+  function toggleSpeech() {
+    if (listening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const speechWindow = window as SpeechWindow;
+    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+    if (!Recognition) {
+      setSpeechSupported(false);
+      setError("Voice input is not supported by this browser. You can still type the action.");
+      return;
+    }
+    setSpeechSupported(true);
+    const recognition = new Recognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = navigator.language || "en-GB";
+    speechBaseRef.current = instruction.trim();
+    recognition.onresult = (event) => {
+      const spoken = Array.from(event.results)
+        .map((result) => result[0]?.transcript ?? "")
+        .join(" ")
+        .trim();
+      const separator = speechBaseRef.current && spoken ? " " : "";
+      setInstruction(`${speechBaseRef.current}${separator}${spoken}`.slice(0, 2000));
+      setState("idle");
+    };
+    recognition.onerror = (event) => {
+      setError(
+        event.error === "not-allowed" || event.error === "service-not-allowed"
+          ? "Microphone access was blocked. Allow microphone access and try again."
+          : "Voice input could not hear that. Try again or type the action."
+      );
+    };
+    recognition.onend = () => {
+      setListening(false);
+      recognitionRef.current = null;
+    };
+    recognitionRef.current = recognition;
+    setError(null);
+    setListening(true);
+    try {
+      recognition.start();
+    } catch {
+      setListening(false);
+      recognitionRef.current = null;
+      setError("Voice input could not start. Try again or type the action.");
+    }
+  }
   async function prepare() {
     setState("loading");
     setError(null);
@@ -90,6 +170,20 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
           {instruction.length}/2,000 characters · your timezone and locale are included for date
           interpretation.
         </p>
+        <button
+          className="button secondary"
+          type="button"
+          aria-pressed={listening}
+          disabled={state === "loading" || speechSupported === false}
+          onClick={toggleSpeech}
+        >
+          {listening ? "Stop listening" : "🎙 Speak"}
+        </button>
+        {speechSupported === false ? (
+          <p className="hint">Voice input is unavailable in this browser.</p>
+        ) : listening ? (
+          <p className="hint" role="status">Listening… speak the action now.</p>
+        ) : null}
         <button
           className="button primary"
           type="button"
