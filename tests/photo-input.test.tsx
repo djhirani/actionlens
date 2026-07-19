@@ -40,7 +40,7 @@ describe("photo confirmation UI", () => {
     });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => response }));
     render(<DocumentCheck photoInputEnabled />);
-    fireEvent.change(screen.getByLabelText("Upload attachment — PDF or image"), {
+    fireEvent.change(screen.getByLabelText("Letter, email, text message, or document"), {
       target: { files: [new File(["photo"], "letter.png", { type: "image/png" })] }
     });
     fireEvent.click(screen.getByRole("button", { name: "Analyse document" }));
@@ -80,13 +80,22 @@ describe("photo confirmation UI", () => {
   });
 
   it("accepts a screenshot pasted from the clipboard into the photo path", () => {
+    vi.stubGlobal("URL", {
+      ...URL,
+      createObjectURL: vi.fn(() => "blob:pasted-screenshot"),
+      revokeObjectURL: vi.fn()
+    });
     render(<DocumentCheck photoInputEnabled />);
     const screenshot = new File(["pixels"], "screenshot.png", { type: "image/png" });
-    fireEvent.paste(screen.getByLabelText("Or paste a screenshot"), {
+    fireEvent.paste(screen.getByRole("button", { name: "Upload attachment or paste screenshot" }), {
       clipboardData: {
         items: [{ kind: "file", type: "image/png", getAsFile: () => screenshot }]
       }
     });
+    expect(screen.getByAltText("Selected attachment preview")).toHaveAttribute(
+      "src",
+      "blob:pasted-screenshot"
+    );
     expect(screen.getByText("Selected: screenshot.png")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Analyse document" })).toBeEnabled();
   });

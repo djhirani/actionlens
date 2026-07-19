@@ -44,13 +44,16 @@ export function DocumentCheck({
   }
 
   function selectFile(file: File | null) {
+    if (photoUrl) URL.revokeObjectURL(photoUrl);
     fileRef.current = file;
     setFileName(file?.name ?? null);
-    setFileKind(file && isSupportedImage(file) ? "image" : "pdf");
+    const kind = file && isSupportedImage(file) ? "image" : "pdf";
+    setFileKind(kind);
+    setPhotoUrl(file && kind === "image" ? URL.createObjectURL(file) : null);
     setError(null);
   }
 
-  function pasteScreenshot(event: React.ClipboardEvent<HTMLTextAreaElement>) {
+  function pasteScreenshot(event: React.ClipboardEvent<HTMLDivElement>) {
     event.preventDefault();
     const file = Array.from(event.clipboardData.items)
       .find((item) => item.kind === "file" && item.type.startsWith("image/"))
@@ -249,44 +252,57 @@ export function DocumentCheck({
             </li>
           </ul>
         </div>
-        <label htmlFor="document-file">
-          {photoInputEnabled ? "Upload attachment — PDF or image" : "Text-based PDF"}
-        </label>
         {photoInputEnabled ? (
-          <p className="hint">For a letter, email, text message, notice, or other document.</p>
-        ) : null}
-        <input
-          ref={inputRef}
-          id="document-file"
-          type="file"
-          accept={
-            photoInputEnabled
-              ? "application/pdf,.pdf,image/jpeg,.jpg,.jpeg,image/png,.png,image/heic,.heic,image/webp,.webp"
-              : "application/pdf,.pdf"
-          }
-          disabled={state !== "idle"}
-          onChange={(event) => {
-            const file = event.target.files?.[0] ?? null;
-            selectFile(file);
-          }}
-        />
-        {photoInputEnabled ? (
-          <div className="screenshot-paste">
-            <label htmlFor="screenshot-paste">Or paste a screenshot</label>
-            <textarea
-              id="screenshot-paste"
-              rows={2}
-              defaultValue=""
+          <div>
+            <label id="attachment-label" htmlFor="document-file">
+              Letter, email, text message, or document
+            </label>
+            <input
+              ref={inputRef}
+              id="document-file"
+              className="visually-hidden-file"
+              type="file"
+              accept="application/pdf,.pdf,image/jpeg,.jpg,.jpeg,image/png,.png,image/heic,.heic,image/webp,.webp"
               disabled={state !== "idle"}
-              placeholder="Click here, then press Ctrl+V or ⌘V (or choose Paste on mobile)"
-              aria-describedby="screenshot-paste-hint"
-              onPaste={state === "idle" ? pasteScreenshot : undefined}
+              onChange={(event) => selectFile(event.target.files?.[0] ?? null)}
             />
-            <span id="screenshot-paste-hint">
-              The pasted image will appear as the selected attachment below.
-            </span>
+            <div
+              className="attachment-field"
+              role="button"
+              tabIndex={state === "idle" ? 0 : -1}
+              aria-label="Upload attachment or paste screenshot"
+              aria-describedby="attachment-help"
+              aria-disabled={state !== "idle"}
+              onClick={() => inputRef.current?.click()}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") inputRef.current?.click();
+              }}
+              onPaste={state === "idle" ? pasteScreenshot : undefined}
+            >
+              {photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={photoUrl} alt="Selected attachment preview" />
+              ) : (
+                <strong>Click to upload, or paste a screenshot</strong>
+              )}
+              <span id="attachment-help">
+                Text-based PDF, JPG, PNG, HEIC, or WebP · Ctrl+V or ⌘V to paste
+              </span>
+            </div>
           </div>
-        ) : null}
+        ) : (
+          <>
+            <label htmlFor="document-file">Text-based PDF</label>
+            <input
+              ref={inputRef}
+              id="document-file"
+              type="file"
+              accept="application/pdf,.pdf"
+              disabled={state !== "idle"}
+              onChange={(event) => selectFile(event.target.files?.[0] ?? null)}
+            />
+          </>
+        )}
         {fileName ? <p className="hint">Selected: {fileName}</p> : null}
         <div className="actions">
           <button

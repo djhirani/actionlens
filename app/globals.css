@@ -457,23 +457,51 @@ textarea {
   line-height: 1.6;
 }
 
-.screenshot-paste {
-  display: grid;
-  gap: 0.25rem;
-  margin-top: 0.75rem;
-  color: var(--ink);
+.visually-hidden-file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-.screenshot-paste span {
+.attachment-field {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-top: 0.4rem;
+  border: 2px dashed #a9bfdc;
+  border-radius: 12px;
+  background: #f7faff;
+  padding: 1.25rem;
+  color: var(--ink);
+  text-align: center;
+  cursor: pointer;
+}
+
+.attachment-field span {
   color: var(--muted);
   font-size: 0.9rem;
 }
 
-.screenshot-paste textarea {
-  min-height: 78px;
-  border-style: dashed;
-  background: #f7faff;
-  resize: none;
+.attachment-field img {
+  display: block;
+  width: min(100%, 28rem);
+  max-height: 20rem;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.attachment-field:focus {
+  border-color: var(--blue);
+  outline: 3px solid rgba(43, 111, 210, 0.2);
+}
+
+.attachment-field[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .work-status {
