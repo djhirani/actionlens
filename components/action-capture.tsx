@@ -36,62 +36,135 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
   const [state, setState] = useState<"idle" | "loading" | "saved">("idle");
   const [error, setError] = useState<string | null>(null);
   const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
-  const [speechSupported, setSpeechSupported] = useState<boolean | null>(null);
-  const [listening, setListening] = useState(false);
+  const [voiceState, setVoiceState] = useState<"idle" | "recording" | "transcribing">("idle");
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const microphoneRef = useRef<MediaStream | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const speechBaseRef = useRef("");
 
   useEffect(() => {
-    return () => recognitionRef.current?.stop();
+    return () => {
+      recognitionRef.current?.stop();
+      if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+      microphoneRef.current?.getTracks().forEach((track) => track.stop());
+      if (recordingTimerRef.current) clearTimeout(recordingTimerRef.current);
+    };
   }, []);
 
-  function toggleSpeech() {
-    if (listening) {
-      recognitionRef.current?.stop();
+  function releaseMicrophone() {
+    microphoneRef.current?.getTracks().forEach((track) => track.stop());
+    microphoneRef.current = null;
+    recorderRef.current = null;
+    if (recordingTimerRef.current) clearTimeout(recordingTimerRef.current);
+    recordingTimerRef.current = null;
+  }
+
+  function stopSpeech() {
+    recognitionRef.current?.stop();
+    recognitionRef.current = null;
+    if (recorderRef.current?.state === "recording") recorderRef.current.stop();
+  }
+
+  async function startSpeech() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
+      setError("Voice recording is not supported by this browser. You can still type the action.");
       return;
     }
-    const speechWindow = window as SpeechWindow;
-    const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
-    if (!Recognition) {
-      setSpeechSupported(false);
-      setError("Voice input is not supported by this browser. You can still type the action.");
-      return;
-    }
-    setSpeechSupported(true);
-    const recognition = new Recognition();
-    recognition.continuous = false;
-    recognition.interimResults = true;
-    recognition.lang = navigator.language || "en-GB";
-    speechBaseRef.current = instruction.trim();
-    recognition.onresult = (event) => {
-      const spoken = Array.from(event.results)
-        .map((result) => result[0]?.transcript ?? "")
-        .join(" ")
-        .trim();
-      const separator = speechBaseRef.current && spoken ? " " : "";
-      setInstruction(`${speechBaseRef.current}${separator}${spoken}`.slice(0, 2000));
-      setState("idle");
-    };
-    recognition.onerror = (event) => {
-      setError(
-        event.error === "not-allowed" || event.error === "service-not-allowed"
-          ? "Microphone access was blocked. Allow microphone access and try again."
-          : "Voice input could not hear that. Try again or type the action."
-      );
-    };
-    recognition.onend = () => {
-      setListening(false);
-      recognitionRef.current = null;
-    };
-    recognitionRef.current = recognition;
     setError(null);
-    setListening(true);
     try {
-      recognition.start();
-    } catch {
-      setListening(false);
-      recognitionRef.current = null;
-      setError("Voice input could not start. Try again or type the action.");
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+      });
+      microphoneRef.current = stream;
+      audioChunksRef.current = [];
+      speechBaseRef.current = instruction.trim();
+      const mimeType = ["audio/webm;codecs=opus", "audio/webm", "audio/mp4"].find((type) =>
+        MediaRecorder.isTypeSupported(type)
+      );
+      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+      recorderRef.current = recorder;
+      recorder.ondataavailable = (event) => {
+        if (event.data.size) audioChunksRef.current.push(event.data);
+      };
+      recorder.onerror = () => {
+        setError("Voice recording failed. Please try again or type the action.");
+        setVoiceState("idle");
+        releaseMicrophone();
+      };
+      recorder.onstop = async () => {
+        const audio = new Blob(audioChunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        releaseMicrophone();
+        if (!audio.size) {
+          setError("No speech was recorded. Please try again.");
+          setVoiceState("idle");
+          return;
+        }
+        setVoiceState("transcribing");
+        try {
+          const form = new FormData();
+          form.append("audio", audio, audio.type.includes("mp4") ? "voice.mp4" : "voice.webm");
+          form.append("locale", navigator.language || "en-GB");
+          const response = await fetch("/api/transcribe-audio", { method: "POST", body: form });
+          const data: unknown = await response.json();
+          if (!response.ok)
+            throw new Error(
+              typeof data === "object" && data && "error" in data
+                ? String(data.error)
+                : "Voice transcription failed."
+            );
+          const transcript =
+            typeof data === "object" && data && "text" in data ? String(data.text).trim() : "";
+          if (!transcript) throw new Error("No speech was detected. Please try again.");
+          const separator = speechBaseRef.current && transcript ? " " : "";
+          setInstruction(`${speechBaseRef.current}${separator}${transcript}`.slice(0, 2000));
+          setState("idle");
+        } catch (caught) {
+          setError(caught instanceof Error ? caught.message : "Voice transcription failed.");
+        } finally {
+          setVoiceState("idle");
+        }
+      };
+      recorder.start(250);
+      setVoiceState("recording");
+      recordingTimerRef.current = setTimeout(stopSpeech, 60_000);
+
+      const speechWindow = window as SpeechWindow;
+      const Recognition = speechWindow.SpeechRecognition ?? speechWindow.webkitSpeechRecognition;
+      if (Recognition) {
+        const recognition = new Recognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = navigator.language || "en-GB";
+        recognition.onresult = (event) => {
+          const spoken = Array.from(event.results)
+            .map((result) => result[0]?.transcript ?? "")
+            .join(" ")
+            .trim();
+          const separator = speechBaseRef.current && spoken ? " " : "";
+          setInstruction(`${speechBaseRef.current}${separator}${spoken}`.slice(0, 2000));
+          setState("idle");
+        };
+        recognition.onerror = () => undefined;
+        recognition.onend = () => {
+          recognitionRef.current = null;
+        };
+        recognitionRef.current = recognition;
+        try {
+          recognition.start();
+        } catch {
+          recognitionRef.current = null;
+        }
+      }
+    } catch (caught) {
+      releaseMicrophone();
+      setVoiceState("idle");
+      setError(
+        caught instanceof DOMException && caught.name === "NotAllowedError"
+          ? "Microphone access was blocked. Allow microphone access and try again."
+          : "Voice recording could not start. Please try again or type the action."
+      );
     }
   }
   async function prepare() {
@@ -173,21 +246,33 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
         <button
           className="button secondary"
           type="button"
-          aria-pressed={listening}
-          disabled={state === "loading" || speechSupported === false}
-          onClick={toggleSpeech}
+          aria-pressed={voiceState === "recording"}
+          disabled={state === "loading" || voiceState === "transcribing"}
+          onClick={voiceState === "recording" ? stopSpeech : startSpeech}
         >
-          {listening ? "Stop listening" : "🎙 Speak"}
+          {voiceState === "recording"
+            ? "Stop and transcribe"
+            : voiceState === "transcribing"
+              ? "Transcribing…"
+              : "🎙 Speak"}
         </button>
-        {speechSupported === false ? (
-          <p className="hint">Voice input is unavailable in this browser.</p>
-        ) : listening ? (
-          <p className="hint" role="status">Listening… speak the action now.</p>
+        {voiceState === "recording" ? (
+          <p className="hint" role="status">
+            Listening… your words will appear as you speak.
+          </p>
+        ) : voiceState === "transcribing" ? (
+          <p className="hint" role="status">
+            Improving spelling and finalizing your words…
+          </p>
         ) : null}
+        <p className="hint">
+          Voice uses live browser transcription, then sends the recording to OpenAI for the final
+          transcript. The recording is not saved by ActionLens.
+        </p>
         <button
           className="button primary"
           type="button"
-          disabled={!instruction.trim() || state === "loading"}
+          disabled={!instruction.trim() || state === "loading" || voiceState !== "idle"}
           onClick={prepare}
         >
           {state === "loading" ? (

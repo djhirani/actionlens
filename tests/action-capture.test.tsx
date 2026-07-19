@@ -64,8 +64,7 @@ describe("human confirmation flow", () => {
   });
   it("transcribes microphone speech into the instruction field", async () => {
     let emitResult:
-      | ((event: { results: ArrayLike<{ 0?: { transcript: string } }> }) => void)
-      | null = null;
+      ((event: { results: ArrayLike<{ 0?: { transcript: string } }> }) => void) | null = null;
     let emitEnd: (() => void) | null = null;
     class MockSpeechRecognition {
       continuous = false;
@@ -89,22 +88,59 @@ describe("human confirmation flow", () => {
         emitEnd?.();
       }
     }
+    class MockMediaRecorder {
+      static isTypeSupported() {
+        return true;
+      }
+      state: RecordingState = "inactive";
+      mimeType = "audio/webm";
+      ondataavailable: ((event: BlobEvent) => void) | null = null;
+      onerror: (() => void) | null = null;
+      onstop: (() => void) | null = null;
+      start() {
+        this.state = "recording";
+      }
+      stop() {
+        this.state = "inactive";
+        this.ondataavailable?.({ data: new Blob(["voice"], { type: "audio/webm" }) } as BlobEvent);
+        this.onstop?.();
+      }
+    }
+    vi.stubGlobal("MediaRecorder", MockMediaRecorder);
+    Object.defineProperty(navigator, "mediaDevices", {
+      configurable: true,
+      value: {
+        getUserMedia: vi.fn().mockResolvedValue({
+          getTracks: () => [{ stop: vi.fn() }]
+        })
+      }
+    });
     Object.defineProperty(window, "SpeechRecognition", {
       configurable: true,
       value: MockSpeechRecognition
     });
+    vi.mocked(fetch).mockImplementation(async (input) =>
+      String(input) === "/api/transcribe-audio"
+        ? ({ ok: true, json: async () => ({ text: "Call the university tomorrow." }) } as Response)
+        : ({ ok: true, json: async () => actionFixture() } as Response)
+    );
     render(<ActionCapture />);
-    await waitFor(() => expect(screen.getByRole("button", { name: "🎙 Speak" })).toBeEnabled());
     fireEvent.click(screen.getByRole("button", { name: "🎙 Speak" }));
+    await screen.findByRole("button", { name: "Stop and transcribe" });
     act(() => {
       emitResult?.({
-        results: [{ 0: { transcript: "Call the university tomorrow" } }]
+        results: [{ 0: { transcript: "call the univercity tomorow" } }]
       });
       emitEnd?.();
     });
 
-    expect(screen.getByLabelText("Instruction")).toHaveValue("Call the university tomorrow");
+    expect(screen.getByLabelText("Instruction")).toHaveValue("call the univercity tomorow");
+    fireEvent.click(screen.getByRole("button", { name: "Stop and transcribe" }));
+    await waitFor(() =>
+      expect(screen.getByLabelText("Instruction")).toHaveValue("Call the university tomorrow.")
+    );
     expect(screen.getByRole("button", { name: "Prepare action" })).toBeEnabled();
     delete (window as Window & { SpeechRecognition?: unknown }).SpeechRecognition;
+    Reflect.deleteProperty(navigator, "mediaDevices");
   });
 });
