@@ -119,8 +119,9 @@ export function DocumentCheck({
       }
       const pages = await extractPdfText(file);
       const sourceHash = await hashSourcePages(pages);
+      const sourceText = pages.map((page) => page.text).join("\n\n");
       setState("analysing");
-      const response = await fetch("/api/analyze-document", {
+      const analysisRequest = fetch("/api/analyze-document", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -130,6 +131,8 @@ export function DocumentCheck({
           timeContext: getTimeContext()
         })
       });
+      const scamRequest = requestScamCheck(sourceText, scamCheckEnabled);
+      const [response, nextAssessment] = await Promise.all([analysisRequest, scamRequest]);
       const data: unknown = await response.json();
       if (!response.ok)
         throw new Error(
@@ -138,8 +141,6 @@ export function DocumentCheck({
             : "Document analysis failed."
         );
       const nextResult = DocumentAnalysisResultSchema.parse(data);
-      const sourceText = pages.map((page) => page.text).join("\n\n");
-      const nextAssessment = await requestScamCheck(sourceText, scamCheckEnabled);
       setScamAssessment(nextAssessment);
       if (nextAssessment.scamRisk !== "likely") setResult(nextResult);
       releaseFile();
@@ -334,16 +335,18 @@ export function DocumentCheck({
               <strong>
                 {state === "extracting"
                   ? photoInputEnabled && fileKind === "image"
-                    ? "Reading the photo in this browser"
-                    : "Extracting text in this browser"
-                  : "Analysing claims and verifying exact quotes"}
+                    ? "Preparing photo…"
+                    : "Reading document…"
+                  : photoInputEnabled && fileKind === "image"
+                    ? "Reading photo and verifying quotes…"
+                    : "Verifying quotes and checking risk…"}
               </strong>
               <small>
                 {state === "extracting"
                   ? photoInputEnabled && fileKind === "image"
                     ? "The photo will be sent to OpenAI for transcription and is not saved."
                     : "The original PDF stays local and is not saved."
-                  : "Extracted text is sent to OpenAI; deterministic code checks the response."}
+                  : "This model step usually takes several seconds. Keep this page open."}
               </small>
             </div>
           </div>
