@@ -40,7 +40,7 @@ describe("photo confirmation UI", () => {
     });
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => response }));
     render(<DocumentCheck photoInputEnabled />);
-    fireEvent.change(screen.getByLabelText("Text-based PDF or photo"), {
+    fireEvent.change(screen.getByLabelText("Upload attachment — PDF or image"), {
       target: { files: [new File(["photo"], "letter.png", { type: "image/png" })] }
     });
     fireEvent.click(screen.getByRole("button", { name: "Analyse document" }));
@@ -77,5 +77,17 @@ describe("photo confirmation UI", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Analyse document" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Choose a PDF file.");
+  });
+
+  it("accepts a screenshot pasted from the clipboard into the photo path", () => {
+    render(<DocumentCheck photoInputEnabled />);
+    const screenshot = new File(["pixels"], "screenshot.png", { type: "image/png" });
+    fireEvent.paste(screen.getByLabelText("Or paste a screenshot"), {
+      clipboardData: {
+        items: [{ kind: "file", type: "image/png", getAsFile: () => screenshot }]
+      }
+    });
+    expect(screen.getByText("Selected: screenshot.png")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Analyse document" })).toBeEnabled();
   });
 });

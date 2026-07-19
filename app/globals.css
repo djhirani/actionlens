@@ -457,6 +457,25 @@ textarea {
   line-height: 1.6;
 }
 
+.screenshot-paste {
+  display: grid;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  color: var(--ink);
+}
+
+.screenshot-paste span {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.screenshot-paste textarea {
+  min-height: 78px;
+  border-style: dashed;
+  background: #f7faff;
+  resize: none;
+}
+
 .work-status {
   display: flex;
   align-items: center;

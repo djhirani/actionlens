@@ -43,6 +43,26 @@ export function DocumentCheck({
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  function selectFile(file: File | null) {
+    fileRef.current = file;
+    setFileName(file?.name ?? null);
+    setFileKind(file && isSupportedImage(file) ? "image" : "pdf");
+    setError(null);
+  }
+
+  function pasteScreenshot(event: React.ClipboardEvent<HTMLTextAreaElement>) {
+    event.preventDefault();
+    const file = Array.from(event.clipboardData.items)
+      .find((item) => item.kind === "file" && item.type.startsWith("image/"))
+      ?.getAsFile();
+    if (!file) {
+      setError("Copy a screenshot, then paste it here.");
+      return;
+    }
+    selectFile(file);
+    if (inputRef.current) inputRef.current.value = "";
+  }
+
   function clearPhoto() {
     if (photoUrl) URL.revokeObjectURL(photoUrl);
     setPhotoUrl(null);
@@ -230,8 +250,11 @@ export function DocumentCheck({
           </ul>
         </div>
         <label htmlFor="document-file">
-          {photoInputEnabled ? "Text-based PDF or photo" : "Text-based PDF"}
+          {photoInputEnabled ? "Upload attachment — PDF or image" : "Text-based PDF"}
         </label>
+        {photoInputEnabled ? (
+          <p className="hint">For a letter, email, text message, notice, or other document.</p>
+        ) : null}
         <input
           ref={inputRef}
           id="document-file"
@@ -244,12 +267,26 @@ export function DocumentCheck({
           disabled={state !== "idle"}
           onChange={(event) => {
             const file = event.target.files?.[0] ?? null;
-            fileRef.current = file;
-            setFileName(file?.name ?? null);
-            setFileKind(file && isSupportedImage(file) ? "image" : "pdf");
-            setError(null);
+            selectFile(file);
           }}
         />
+        {photoInputEnabled ? (
+          <div className="screenshot-paste">
+            <label htmlFor="screenshot-paste">Or paste a screenshot</label>
+            <textarea
+              id="screenshot-paste"
+              rows={2}
+              defaultValue=""
+              disabled={state !== "idle"}
+              placeholder="Click here, then press Ctrl+V or ⌘V (or choose Paste on mobile)"
+              aria-describedby="screenshot-paste-hint"
+              onPaste={state === "idle" ? pasteScreenshot : undefined}
+            />
+            <span id="screenshot-paste-hint">
+              The pasted image will appear as the selected attachment below.
+            </span>
+          </div>
+        ) : null}
         {fileName ? <p className="hint">Selected: {fileName}</p> : null}
         <div className="actions">
           <button

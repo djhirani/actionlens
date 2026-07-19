@@ -26,7 +26,7 @@ for (const fixture of fixtures) {
 
     await page.goto("/");
     await page
-      .getByLabel("Text-based PDF")
+      .getByLabel("Upload attachment — PDF or image")
       .setInputFiles(path.join(process.cwd(), "tests", "fixtures", fixture.name));
     await page.getByRole("button", { name: "Analyse document" }).click();
 
@@ -37,6 +37,8 @@ for (const fixture of fixtures) {
     expect(requestBody?.pages).toHaveLength(1);
     expect(requestBody?.pages?.[0]?.text?.replace(/\s+/g, " ")).toContain(fixture.expectedText);
     await expect(page.getByText(`Selected: ${fixture.name}`)).toBeVisible();
-    await expect(page.getByLabel("Text-based PDF")).toHaveValue(new RegExp(`${fixture.name}$`));
+    await expect(page.getByLabel("Upload attachment — PDF or image")).toHaveValue(
+      new RegExp(`${fixture.name}$`)
+    );
   });
 }
