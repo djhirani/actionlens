@@ -243,19 +243,36 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
           {instruction.length}/2,000 characters · your timezone and locale are included for date
           interpretation.
         </p>
-        <button
-          className="button secondary"
-          type="button"
-          aria-pressed={voiceState === "recording"}
-          disabled={state === "loading" || voiceState === "transcribing"}
-          onClick={voiceState === "recording" ? stopSpeech : startSpeech}
-        >
-          {voiceState === "recording"
-            ? "Stop and transcribe"
-            : voiceState === "transcribing"
-              ? "Transcribing…"
-              : "🎙 Speak"}
-        </button>
+        <div className="actions action-input-buttons">
+          <button
+            className="button secondary"
+            type="button"
+            aria-pressed={voiceState === "recording"}
+            disabled={state === "loading" || voiceState === "transcribing"}
+            onClick={voiceState === "recording" ? stopSpeech : startSpeech}
+          >
+            {voiceState === "recording"
+              ? "Stop and transcribe"
+              : voiceState === "transcribing"
+                ? "Transcribing…"
+                : "🎙 Speak"}
+          </button>
+          <button
+            className="button primary"
+            type="button"
+            disabled={!instruction.trim() || state === "loading" || voiceState !== "idle"}
+            onClick={prepare}
+          >
+            {state === "loading" ? (
+              <>
+                <span className="spinner" aria-hidden="true" />
+                Creating…
+              </>
+            ) : (
+              "Create action"
+            )}
+          </button>
+        </div>
         {voiceState === "recording" ? (
           <p className="hint" role="status">
             Listening… your words will appear as you speak.
@@ -269,21 +286,6 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
           Voice uses live browser transcription, then sends the recording to OpenAI for the final
           transcript. The recording is not saved by ActionLens.
         </p>
-        <button
-          className="button primary"
-          type="button"
-          disabled={!instruction.trim() || state === "loading" || voiceState !== "idle"}
-          onClick={prepare}
-        >
-          {state === "loading" ? (
-            <>
-              <span className="spinner" aria-hidden="true" />
-              Preparing draft…
-            </>
-          ) : (
-            "Prepare action"
-          )}
-        </button>
         {error ? (
           <p className="error" role="alert">
             {error}

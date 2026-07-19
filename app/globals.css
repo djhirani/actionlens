@@ -295,6 +295,15 @@ textarea {
   margin-top: 1rem;
 }
 
+.action-input-buttons {
+  flex-wrap: nowrap;
+}
+
+.action-input-buttons .button {
+  width: auto;
+  flex: 1 1 0;
+}
+
 .button {
   display: inline-flex;
   min-height: 46px;

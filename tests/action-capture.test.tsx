@@ -25,7 +25,7 @@ describe("human confirmation flow", () => {
     fireEvent.change(screen.getByLabelText("Instruction"), {
       target: { value: "Call the university tomorrow at 10" }
     });
-    fireEvent.click(screen.getByRole("button", { name: "Prepare action" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create action" }));
     await screen.findByText("Review this action");
   }
   it("saves only after confirmation", async () => {
@@ -139,7 +139,7 @@ describe("human confirmation flow", () => {
     await waitFor(() =>
       expect(screen.getByLabelText("Instruction")).toHaveValue("Call the university tomorrow.")
     );
-    expect(screen.getByRole("button", { name: "Prepare action" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Create action" })).toBeEnabled();
     delete (window as Window & { SpeechRecognition?: unknown }).SpeechRecognition;
     Reflect.deleteProperty(navigator, "mediaDevices");
   });

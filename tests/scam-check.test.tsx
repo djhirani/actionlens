@@ -57,7 +57,7 @@ describe("scam guard UI", () => {
     fireEvent.change(screen.getByLabelText("Instruction"), {
       target: { value: "Pay using gift cards today" }
     });
-    fireEvent.click(screen.getByRole("button", { name: "Prepare action" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create action" }));
     expect(
       await screen.findByRole("heading", {
         name: "Suspected scam — do not pay, do not click, do not reply"
@@ -80,7 +80,7 @@ describe("scam guard UI", () => {
     fireEvent.change(screen.getByLabelText("Instruction"), {
       target: { value: "Call the university tomorrow at 10" }
     });
-    fireEvent.click(screen.getByRole("button", { name: "Prepare action" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create action" }));
     expect(await screen.findByText("Review this action")).toBeInTheDocument();
     expect(screen.queryByText(/Suspected scam/)).not.toBeInTheDocument();
   });
