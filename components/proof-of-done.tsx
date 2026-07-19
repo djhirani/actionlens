@@ -3,7 +3,12 @@ import { useRef, useState } from "react";
 import { completionRepository } from "@/lib/db";
 import { extractCompletionPdfText } from "@/lib/documents/extract-pdf";
 import { hashSourcePages } from "@/lib/documents/hash";
-import { getStrongProofResult, getWeakProofResult } from "@/lib/demo/proof-fixtures";
+import {
+  getStrongProofResult,
+  getWeakProofResult,
+  STRONG_EVIDENCE_PAGES,
+  WEAK_EVIDENCE_PAGES
+} from "@/lib/demo/proof-fixtures";
 import {
   CompletionAnalysisResultSchema,
   type ActionItem,
@@ -40,6 +45,7 @@ export function ProofOfDone({
   const [status, setStatus] = useState(action.status);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [checkedSource, setCheckedSource] = useState<string | null>(null);
 
   function releaseFile() {
     fileRef.current = null;
@@ -91,11 +97,13 @@ export function ProofOfDone({
   async function checkPastedText() {
     const value = text.trim();
     if (!value) return;
+    setCheckedSource("Checked: pasted reply text");
     await analysePages([{ pageNumber: 1, text: value }], "Pasted completion evidence");
   }
   async function checkPdf() {
     const file = fileRef.current;
     if (!file) return;
+    setCheckedSource(`Checked: ${file.name}`);
     setBusy(true);
     try {
       const pages = await extractCompletionPdfText(file);
@@ -108,6 +116,13 @@ export function ProofOfDone({
   }
   async function loadFixture(kind: "weak" | "strong") {
     setError(null);
+    releaseFile();
+    setText(
+      (kind === "weak" ? WEAK_EVIDENCE_PAGES : STRONG_EVIDENCE_PAGES)
+        .map((page) => page.text)
+        .join("\n\n")
+    );
+    setCheckedSource("Checked: sample reply text");
     await storeResult(kind === "weak" ? getWeakProofResult() : getStrongProofResult());
   }
   async function decide(decision: "mark_complete" | "keep_open") {
@@ -130,8 +145,9 @@ export function ProofOfDone({
         <p className="eyebrow">Proof of Done</p>
         <h2 id="proof-heading">Check proof of completion</h2>
         <p className="muted">
-          Compare later evidence with the confirmed requirement. The original evidence file is not
-          saved.
+          This checks the REPLY you received (e.g. a confirmation email) — not the original letter.
+          A task only closes when the reply explicitly names what was required. The original
+          evidence file is not saved.
         </p>
         <div className="criteria">
           <strong>Completion criteria</strong>
@@ -144,65 +160,74 @@ export function ProofOfDone({
             ))}
           </ul>
         </div>
-        <label htmlFor="completion-text">Paste confirmation text</label>
-        <textarea
-          id="completion-text"
-          maxLength={30000}
-          value={text}
-          disabled={busy}
-          onChange={(event) => setText(event.target.value)}
-          placeholder="Paste a confirmation message or receipt…"
-        />
-        <p className="hint">{text.length}/30,000 characters</p>
-        <button
-          className="button primary"
-          type="button"
-          disabled={!text.trim() || busy}
-          onClick={checkPastedText}
-        >
-          Check pasted evidence
-        </button>
-        <div className="proof-divider">or</div>
-        <label htmlFor="completion-file">Upload a text-based PDF</label>
-        <input
-          ref={inputRef}
-          id="completion-file"
-          type="file"
-          accept="application/pdf,.pdf"
-          disabled={busy}
-          onChange={(event) => {
-            const file = event.target.files?.[0] ?? null;
-            fileRef.current = file;
-            setFileName(file?.name ?? null);
-          }}
-        />
-        {fileName ? <p className="hint">Selected: {fileName}</p> : null}
-        <button
-          className="button secondary"
-          type="button"
-          disabled={!fileName || busy}
-          onClick={checkPdf}
-        >
-          Check PDF evidence
-        </button>
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            checked={saveExcerpts}
-            onChange={(event) => setSaveExcerpts(event.target.checked)}
-          />{" "}
-          Save verified completion excerpts locally
-        </label>
         {demo ? (
-          <div className="actions">
-            <button className="button ghost" type="button" onClick={() => loadFixture("weak")}>
-              Try weak evidence
-            </button>
-            <button className="button ghost" type="button" onClick={() => loadFixture("strong")}>
-              Try strong evidence
-            </button>
-          </div>
+          <section className="criteria" aria-labelledby="demo-evidence-heading">
+            <h3 id="demo-evidence-heading">Demo — try it with sample replies</h3>
+            <p className="muted">
+              These buttons insert sample reply texts below. Your own files are not used.
+            </p>
+            <div className="actions">
+              <button className="button ghost" type="button" onClick={() => loadFixture("weak")}>
+                Try weak evidence
+              </button>
+              <button className="button ghost" type="button" onClick={() => loadFixture("strong")}>
+                Try strong evidence
+              </button>
+            </div>
+          </section>
         ) : null}
+        <section className="criteria" aria-labelledby="real-evidence-heading">
+          <h3 id="real-evidence-heading">Real evidence — paste or upload the reply you received</h3>
+          <label htmlFor="completion-text">Paste confirmation text</label>
+          <textarea
+            id="completion-text"
+            maxLength={30000}
+            value={text}
+            disabled={busy}
+            onChange={(event) => setText(event.target.value)}
+            placeholder="Paste a confirmation message or receipt…"
+          />
+          <p className="hint">{text.length}/30,000 characters</p>
+          <button
+            className="button primary"
+            type="button"
+            disabled={!text.trim() || busy}
+            onClick={checkPastedText}
+          >
+            Check pasted evidence
+          </button>
+          <div className="proof-divider">or</div>
+          <label htmlFor="completion-file">Upload a text-based PDF</label>
+          <input
+            ref={inputRef}
+            id="completion-file"
+            type="file"
+            accept="application/pdf,.pdf"
+            disabled={busy}
+            onChange={(event) => {
+              const file = event.target.files?.[0] ?? null;
+              fileRef.current = file;
+              setFileName(file?.name ?? null);
+            }}
+          />
+          {fileName ? <p className="hint">Selected: {fileName}</p> : null}
+          <button
+            className="button secondary"
+            type="button"
+            disabled={!fileName || busy}
+            onClick={checkPdf}
+          >
+            Check PDF evidence
+          </button>
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={saveExcerpts}
+              onChange={(event) => setSaveExcerpts(event.target.checked)}
+            />{" "}
+            Save verified completion excerpts locally
+          </label>
+        </section>
         {error ? (
           <p className="error" role="alert">
             {error}
@@ -220,6 +245,7 @@ export function ProofOfDone({
       </div>
       {result ? (
         <section className="card completion-result" aria-live="polite">
+          {checkedSource ? <p className="eyebrow">{checkedSource}</p> : null}
           <span className={`status completion-${result.status}`}>{statusLabel[result.status]}</span>
           <h2>{statusLabel[result.status]}</h2>
           <p>{result.explanation}</p>

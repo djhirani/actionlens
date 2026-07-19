@@ -2,7 +2,7 @@ import type { SourcePage } from "@/lib/schemas";
 
 export const PDF_LIMITS = {
   maxBytes: 10 * 1024 * 1024,
-  maxPages: 5,
+  maxPages: 25,
   maxCharacters: 50_000
 } as const;
 
@@ -62,10 +62,10 @@ export async function validatePdfFile(file: File) {
 
 export function assertExtractedPdfLimits(pages: SourcePage[]) {
   if (pages.length > PDF_LIMITS.maxPages)
-    throw new PdfInputError("Use a PDF with no more than 5 pages.");
+    throw new PdfInputError("Use a PDF with no more than 25 pages.");
   const characters = pages.reduce((total, page) => total + page.text.length, 0);
   if (characters > PDF_LIMITS.maxCharacters)
-    throw new PdfInputError("The extracted text exceeds 50,000 characters.");
+    throw new PdfInputError("This document is too long to analyse reliably");
   if (!pages.some((page) => page.text.trim()))
     throw new PdfInputError(
       "No selectable text was found. Image-only PDFs are not supported in this demo."
@@ -89,7 +89,7 @@ export async function extractPdfText(file: File): Promise<SourcePage[]> {
     let extractionError: unknown;
     try {
       if (document.numPages > PDF_LIMITS.maxPages)
-        throw new PdfInputError("Use a PDF with no more than 5 pages.");
+        throw new PdfInputError("Use a PDF with no more than 25 pages.");
       const pages: SourcePage[] = [];
       for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
         originalFailureStage = "getPage-start";

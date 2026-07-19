@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default function HomePage() {
   const photoInputEnabled = process.env.PHOTO_INPUT_ENABLED?.toLowerCase() !== "false";
+  const scamCheckEnabled = process.env.SCAM_CHECK_ENABLED?.toLowerCase() !== "false";
   return (
     <main className="main">
       <section className="hero">
@@ -39,8 +40,8 @@ export default function HomePage() {
         </div>
         <DemoReset />
       </section>
-      <ActionCapture />
-      <DocumentCheck photoInputEnabled={photoInputEnabled} />
+      <ActionCapture scamCheckEnabled={scamCheckEnabled} />
+      <DocumentCheck photoInputEnabled={photoInputEnabled} scamCheckEnabled={scamCheckEnabled} />
       <section className="card proof-demo-callout">
         <p className="eyebrow">Completion evidence</p>
         <h2>See weak proof rejected</h2>

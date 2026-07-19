@@ -64,13 +64,32 @@ export const TimeContextSchema = z.object({
   timezone: z.string().min(1).max(100),
   locale: z.string().min(2).max(35)
 });
+export const ScamRiskSchema = z.enum(["none", "possible", "likely"]);
+export const ModelScamAssessmentSchema = z.object({
+  scamRisk: ScamRiskSchema,
+  signals: z
+    .array(
+      z.object({
+        text: z.string().min(1).max(240),
+        isQuote: z.boolean()
+      })
+    )
+    .max(8)
+});
+export const ScamAssessmentSchema = z.object({
+  scamRisk: ScamRiskSchema,
+  signals: z.array(z.string().min(1).max(240)).max(8)
+});
+export const ScamCheckRequestSchema = z.object({
+  text: z.string().trim().min(1).max(50_000)
+});
 export const InterpretRequestSchema = z.object({
   instruction: z.string().trim().min(1).max(2000),
   timeContext: TimeContextSchema
 });
 
 export const SourcePageSchema = z.object({
-  pageNumber: z.number().int().min(1).max(5),
+  pageNumber: z.number().int().min(1).max(25),
   text: z.string().max(50_000)
 });
 export const DocumentClaimKindSchema = z.enum([
@@ -105,7 +124,7 @@ export const AnalyzeDocumentRequestSchema = z
   .object({
     displayName: z.string().min(1).max(255),
     sourceHash: z.string().regex(/^[a-f0-9]{64}$/),
-    pages: z.array(SourcePageSchema).min(1).max(5),
+    pages: z.array(SourcePageSchema).min(1).max(25),
     timeContext: TimeContextSchema
   })
   .superRefine((value, context) => {
@@ -142,7 +161,7 @@ export const EvidenceMatchSchema = z.object({
   value: z.string(),
   quote: z.string(),
   normalizedQuote: z.string(),
-  page: z.number().int().min(1).max(5).nullable(),
+  page: z.number().int().min(1).max(25).nullable(),
   charStart: z.number().int().min(0).nullable(),
   charEnd: z.number().int().min(0).nullable(),
   verificationStatus: z.enum(["verified", "near_match_review", "unsupported"]),
@@ -165,7 +184,7 @@ export const DocumentAnalysisResultSchema = z.object({
   source: z.object({
     displayName: z.string(),
     sourceHash: z.string().regex(/^[a-f0-9]{64}$/),
-    pages: z.array(SourcePageSchema).min(1).max(5),
+    pages: z.array(SourcePageSchema).min(1).max(25),
     retained: z.literal(false)
   }),
   provenance: z.object({
@@ -251,6 +270,7 @@ export const CompletionAnalysisResultSchema = CompletionCheckSchema.extend({
 export type ActionItem = z.infer<typeof ActionItemSchema>;
 export type ModelActionDraft = z.infer<typeof ModelActionDraftSchema>;
 export type InterpretRequest = z.infer<typeof InterpretRequestSchema>;
+export type ScamAssessment = z.infer<typeof ScamAssessmentSchema>;
 export type SourcePage = z.infer<typeof SourcePageSchema>;
 export type ModelDocumentProposal = z.infer<typeof ModelDocumentProposalSchema>;
 export type AnalyzeDocumentRequest = z.infer<typeof AnalyzeDocumentRequestSchema>;

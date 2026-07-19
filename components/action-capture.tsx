@@ -1,20 +1,24 @@
 "use client";
 import { useState } from "react";
 import { ActionCard } from "@/components/action-card";
+import { ScamNotice } from "@/components/scam-notice";
 import { actionRepository } from "@/lib/db";
-import { ActionItemSchema, type ActionItem } from "@/lib/schemas";
+import { requestScamCheck, NO_SCAM_RISK } from "@/lib/scam/client";
+import { ActionItemSchema, type ActionItem, type ScamAssessment } from "@/lib/schemas";
 import { getTimeContext } from "@/lib/time-context";
 
-export function ActionCapture() {
+export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?: boolean }) {
   const [instruction, setInstruction] = useState("");
   const [draft, setDraft] = useState<ActionItem | null>(null);
   const [editing, setEditing] = useState(false);
   const [state, setState] = useState<"idle" | "loading" | "saved">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
   async function prepare() {
     setState("loading");
     setError(null);
     setDraft(null);
+    setScamAssessment(NO_SCAM_RISK);
     try {
       const response = await fetch("/api/interpret-text", {
         method: "POST",
@@ -28,7 +32,9 @@ export function ActionCapture() {
             ? String(data.error)
             : "Could not prepare the draft."
         );
-      setDraft(ActionItemSchema.parse(data));
+      const nextAssessment = await requestScamCheck(instruction, scamCheckEnabled);
+      setScamAssessment(nextAssessment);
+      if (nextAssessment.scamRisk !== "likely") setDraft(ActionItemSchema.parse(data));
     } catch (caught) {
       setError(
         caught instanceof TypeError
@@ -58,6 +64,7 @@ export function ActionCapture() {
     setEditing(false);
     setState("idle");
     setError(null);
+    setScamAssessment(NO_SCAM_RISK);
   }
   return (
     <div className="workspace">
@@ -73,6 +80,7 @@ export function ActionCapture() {
           onChange={(event) => {
             setInstruction(event.target.value);
             setState("idle");
+            setScamAssessment(NO_SCAM_RISK);
           }}
         />
         <p className="hint">
@@ -105,9 +113,11 @@ export function ActionCapture() {
           </p>
         ) : null}
       </section>
+      {scamAssessment.scamRisk === "likely" ? <ScamNotice assessment={scamAssessment} /> : null}
       <section className="card" aria-live="polite">
         {draft ? (
           <>
+            <ScamNotice assessment={scamAssessment} />
             <ActionCard action={draft} editing={editing} onChange={setDraft} />
             <div className="actions">
               <button className="button primary" type="button" onClick={confirm}>

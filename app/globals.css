@@ -758,6 +758,33 @@ mark {
   white-space: normal;
 }
 
+.scam-caution {
+  margin-bottom: 1rem;
+  border: 1px solid #e8bd72;
+  border-radius: 10px;
+  background: var(--amber-soft);
+  padding: 1rem;
+  color: var(--amber);
+}
+
+.scam-caution p {
+  margin-bottom: 0;
+}
+
+.scam-warning {
+  grid-column: 1 / -1;
+  border: 2px solid var(--red);
+  background: var(--red-soft);
+}
+
+.scam-reporting {
+  margin-top: 1rem;
+  border: 1px solid #edb2bd;
+  border-radius: 10px;
+  background: white;
+  padding: 1rem;
+}
+
 .inbox-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

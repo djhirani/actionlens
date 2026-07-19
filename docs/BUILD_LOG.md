@@ -200,3 +200,18 @@ The repository is private and Vercel Git integration could not connect because t
 - `npm run typecheck` — passed.
 - `npm test` — passed: 17 files, 59 tests.
 - The named photo fixtures were not present in `tests/fixtures/` in this workspace, so live fixture acceptance could not be run. The available directory contained only `03_hospital_letter_conflicting_dates.pdf` and `05_tenancy_letter_hallucination_bait.pdf`; automated synthetic photo-path coverage was run instead.
+
+## 2026-07-19 — Additive scam-risk guard
+
+- Added a separate, feature-flagged scam-risk assessment route (`SCAM_CHECK_ENABLED`, enabled by default) without changing PDF extraction, photo transcription, action generation, or evidence verification functions.
+- Added deterministic filtering for model-identified signal quotes: quoted signals are displayed only when their whitespace-normalised text occurs in the submitted source or transcription.
+- Likely-risk assessments suppress all action-card and save controls and show suspected-scam wording plus static UK reporting guidance. Possible-risk assessments retain the normal flow with a caution banner and signals.
+- Added focused coverage for likely-risk refusal, unchanged clean-content flow, clean fixture-style correspondence, and removal of unsupported signal quotes.
+
+### Verification
+
+- `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 18 files, 64 tests.
+- `npm run test:e2e` — passed: 8 Chromium tests, including existing PDF and Proof of Done regressions.

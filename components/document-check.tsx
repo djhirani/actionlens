@@ -1,22 +1,31 @@
 "use client";
 import { useRef, useState } from "react";
 import { EvidenceBridge } from "@/components/evidence-bridge";
+import { ScamNotice } from "@/components/scam-notice";
 import { getBaitFixtureResult } from "@/lib/demo/bait-fixture";
 import { getVerifiedFixtureResult } from "@/lib/demo/verified-fixture";
 import { actionRepository } from "@/lib/db";
 import { extractPdfText } from "@/lib/documents/extract-pdf";
 import { hashSourcePages } from "@/lib/documents/hash";
 import { fileToDataUrl, hashFile, isSupportedImage, validateImageFile } from "@/lib/images/input";
+import { NO_SCAM_RISK, requestScamCheck } from "@/lib/scam/client";
 import {
   ActionItemSchema,
   DocumentAnalysisResultSchema,
   ImageAnalysisResultSchema,
   type ImageAnalysisResult,
-  type DocumentAnalysisResult
+  type DocumentAnalysisResult,
+  type ScamAssessment
 } from "@/lib/schemas";
 import { getTimeContext } from "@/lib/time-context";
 
-export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled?: boolean }) {
+export function DocumentCheck({
+  photoInputEnabled = false,
+  scamCheckEnabled = false
+}: {
+  photoInputEnabled?: boolean;
+  scamCheckEnabled?: boolean;
+}) {
   const fileRef = useRef<File | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -26,6 +35,7 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "extracting" | "analysing" | "saved">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
 
   function releaseFile() {
     fileRef.current = null;
@@ -44,6 +54,7 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
     if (!file) return;
     setError(null);
     setResult(null);
+    setScamAssessment(NO_SCAM_RISK);
     clearPhoto();
     setState("extracting");
     try {
@@ -71,7 +82,13 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
               ? String(data.error)
               : "Photo analysis failed."
           );
-        setImageResult(ImageAnalysisResultSchema.parse(data));
+        const nextImageResult = ImageAnalysisResultSchema.parse(data);
+        const nextAssessment = await requestScamCheck(
+          nextImageResult.transcription,
+          scamCheckEnabled
+        );
+        setScamAssessment(nextAssessment);
+        if (nextAssessment.scamRisk !== "likely") setImageResult(nextImageResult);
         releaseFile();
         return;
       }
@@ -95,7 +112,11 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
             ? String(data.error)
             : "Document analysis failed."
         );
-      setResult(DocumentAnalysisResultSchema.parse(data));
+      const nextResult = DocumentAnalysisResultSchema.parse(data);
+      const sourceText = pages.map((page) => page.text).join("\n\n");
+      const nextAssessment = await requestScamCheck(sourceText, scamCheckEnabled);
+      setScamAssessment(nextAssessment);
+      if (nextAssessment.scamRisk !== "likely") setResult(nextResult);
       releaseFile();
     } catch (caught) {
       setError(
@@ -112,6 +133,7 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
 
   function loadDemo(kind: "bait" | "verified") {
     setError(null);
+    setScamAssessment(NO_SCAM_RISK);
     setFileName(null);
     setResult(
       (kind === "bait"
@@ -281,8 +303,10 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
           </p>
         ) : null}
       </div>
+      {scamAssessment.scamRisk === "likely" ? <ScamNotice assessment={scamAssessment} /> : null}
       {result ? (
         <>
+          <ScamNotice assessment={scamAssessment} />
           <EvidenceBridge result={result} />
           <div className="card result-actions">
             <button
@@ -317,6 +341,7 @@ export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled
           </section>
         ) : imageResult.card && photoUrl ? (
           <>
+            <ScamNotice assessment={scamAssessment} />
             <section className="photo-confirmation" aria-labelledby="photo-confirmation-heading">
               <div className="card photo-source">
                 <p className="eyebrow">Uploaded photo</p>
