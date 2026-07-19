@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EvidenceBridge } from "@/components/evidence-bridge";
 import { ScamNotice } from "@/components/scam-notice";
 import { getBaitFixtureResult } from "@/lib/demo/bait-fixture";
@@ -37,6 +37,17 @@ export function DocumentCheck({
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  useEffect(() => {
+    if (state !== "analysing") return;
+    const startedAt = Date.now();
+    const timer = window.setInterval(
+      () => setElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000)),
+      1000
+    );
+    return () => window.clearInterval(timer);
+  }, [state]);
 
   function releaseFile() {
     fileRef.current = null;
@@ -81,6 +92,7 @@ export function DocumentCheck({
     setResult(null);
     setScamAssessment(NO_SCAM_RISK);
     clearPhoto();
+    setElapsedSeconds(0);
     setState("extracting");
     try {
       if (photoInputEnabled && isSupportedImage(file)) {
@@ -346,7 +358,9 @@ export function DocumentCheck({
                   ? photoInputEnabled && fileKind === "image"
                     ? "The photo will be sent to OpenAI for transcription and is not saved."
                     : "The original PDF stays local and is not saved."
-                  : "This model step usually takes several seconds. Keep this page open."}
+                  : photoInputEnabled && fileKind === "image"
+                    ? `High-accuracy photo checks usually take 5–10 seconds. ${elapsedSeconds}s elapsed.`
+                    : `This model step usually takes several seconds. ${elapsedSeconds}s elapsed.`}
               </small>
             </div>
           </div>
