@@ -6,18 +6,24 @@ import { getVerifiedFixtureResult } from "@/lib/demo/verified-fixture";
 import { actionRepository } from "@/lib/db";
 import { extractPdfText } from "@/lib/documents/extract-pdf";
 import { hashSourcePages } from "@/lib/documents/hash";
+import { fileToDataUrl, hashFile, isSupportedImage, validateImageFile } from "@/lib/images/input";
 import {
   ActionItemSchema,
   DocumentAnalysisResultSchema,
+  ImageAnalysisResultSchema,
+  type ImageAnalysisResult,
   type DocumentAnalysisResult
 } from "@/lib/schemas";
 import { getTimeContext } from "@/lib/time-context";
 
-export function DocumentCheck() {
+export function DocumentCheck({ photoInputEnabled = false }: { photoInputEnabled?: boolean }) {
   const fileRef = useRef<File | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [fileKind, setFileKind] = useState<"pdf" | "image">("pdf");
   const [result, setResult] = useState<DocumentAnalysisResult | null>(null);
+  const [imageResult, setImageResult] = useState<ImageAnalysisResult | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [state, setState] = useState<"idle" | "extracting" | "analysing" | "saved">("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -27,13 +33,48 @@ export function DocumentCheck() {
     if (inputRef.current) inputRef.current.value = "";
   }
 
+  function clearPhoto() {
+    if (photoUrl) URL.revokeObjectURL(photoUrl);
+    setPhotoUrl(null);
+    setImageResult(null);
+  }
+
   async function analyse() {
     const file = fileRef.current;
     if (!file) return;
     setError(null);
     setResult(null);
+    clearPhoto();
     setState("extracting");
     try {
+      if (photoInputEnabled && isSupportedImage(file)) {
+        validateImageFile(file);
+        const previewUrl = URL.createObjectURL(file);
+        setPhotoUrl(previewUrl);
+        const [sourceHash, imageDataUrl] = await Promise.all([hashFile(file), fileToDataUrl(file)]);
+        setState("analysing");
+        const response = await fetch("/api/analyze-image", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            displayName: file.name,
+            sourceHash,
+            mimeType: file.type,
+            imageDataUrl,
+            timeContext: getTimeContext()
+          })
+        });
+        const data: unknown = await response.json();
+        if (!response.ok)
+          throw new Error(
+            typeof data === "object" && data && "error" in data
+              ? String(data.error)
+              : "Photo analysis failed."
+          );
+        setImageResult(ImageAnalysisResultSchema.parse(data));
+        releaseFile();
+        return;
+      }
       const pages = await extractPdfText(file);
       const sourceHash = await hashSourcePages(pages);
       setState("analysing");
@@ -77,6 +118,7 @@ export function DocumentCheck() {
         ? getBaitFixtureResult()
         : getVerifiedFixtureResult()) as DocumentAnalysisResult
     );
+    clearPhoto();
     releaseFile();
     setState("idle");
   }
@@ -137,6 +179,13 @@ export function DocumentCheck() {
     setState("saved");
   }
 
+  async function confirmImage() {
+    if (!imageResult?.card) return;
+    await actionRepository.saveConfirmed(imageResult.card);
+    clearPhoto();
+    setState("saved");
+  }
+
   return (
     <section className="document-workspace" id="document-check" aria-labelledby="document-heading">
       <div className="card document-input">
@@ -146,6 +195,9 @@ export function DocumentCheck() {
           <strong>Your document, handled deliberately</strong>
           <ul>
             <li>Text is extracted locally from a text-based PDF.</li>
+            {photoInputEnabled ? (
+              <li>Photos are sent to OpenAI for transcription and are not saved by ActionLens.</li>
+            ) : null}
             <li>Relevant extracted text is sent to OpenAI for analysis.</li>
             <li>The original file is not saved by ActionLens.</li>
             <li>The result is saved locally only after you confirm it.</li>
@@ -155,17 +207,24 @@ export function DocumentCheck() {
             </li>
           </ul>
         </div>
-        <label htmlFor="document-file">Text-based PDF</label>
+        <label htmlFor="document-file">
+          {photoInputEnabled ? "Text-based PDF or photo" : "Text-based PDF"}
+        </label>
         <input
           ref={inputRef}
           id="document-file"
           type="file"
-          accept="application/pdf,.pdf"
+          accept={
+            photoInputEnabled
+              ? "application/pdf,.pdf,image/jpeg,.jpg,.jpeg,image/png,.png,image/heic,.heic,image/webp,.webp"
+              : "application/pdf,.pdf"
+          }
           disabled={state !== "idle"}
           onChange={(event) => {
             const file = event.target.files?.[0] ?? null;
             fileRef.current = file;
             setFileName(file?.name ?? null);
+            setFileKind(file && isSupportedImage(file) ? "image" : "pdf");
             setError(null);
           }}
         />
@@ -196,12 +255,16 @@ export function DocumentCheck() {
             <div>
               <strong>
                 {state === "extracting"
-                  ? "Extracting text in this browser"
+                  ? photoInputEnabled && fileKind === "image"
+                    ? "Reading the photo in this browser"
+                    : "Extracting text in this browser"
                   : "Analysing claims and verifying exact quotes"}
               </strong>
               <small>
                 {state === "extracting"
-                  ? "The original PDF stays local and is not saved."
+                  ? photoInputEnabled && fileKind === "image"
+                    ? "The photo will be sent to OpenAI for transcription and is not saved."
+                    : "The original PDF stays local and is not saved."
                   : "Extracted text is sent to OpenAI; deterministic code checks the response."}
               </small>
             </div>
@@ -241,6 +304,71 @@ export function DocumentCheck() {
             </button>
           </div>
         </>
+      ) : null}
+      {imageResult ? (
+        imageResult.readConfidence === "low" ? (
+          <section className="card photo-escalation" role="status">
+            <p className="eyebrow">Photo needs another look</p>
+            <h2>We couldn’t read this photo reliably.</h2>
+            <p>Please take a clearer photo with the whole letter in focus and try again.</p>
+            <button className="button ghost" type="button" onClick={clearPhoto}>
+              Discard
+            </button>
+          </section>
+        ) : imageResult.card && photoUrl ? (
+          <>
+            <section className="photo-confirmation" aria-labelledby="photo-confirmation-heading">
+              <div className="card photo-source">
+                <p className="eyebrow">Uploaded photo</p>
+                {/* The object URL exists only for this confirmation view and is never persisted. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={photoUrl} alt="Uploaded letter to compare with the transcription" />
+              </div>
+              <div className="card photo-transcription">
+                <p className="eyebrow">Transcription</p>
+                <h2 id="photo-confirmation-heading">Check every important detail</h2>
+                <p className="source-text">{imageResult.transcription}</p>
+              </div>
+            </section>
+            <section className="card photo-card">
+              <span className="status review photo-source-badge">
+                Read from photo — no original text layer. Check the transcription before confirming.
+              </span>
+              <h2>{imageResult.card.title}</h2>
+              <p>{imageResult.card.action}</p>
+              <dl className="details">
+                <div className="detail">
+                  <dt>Deadline</dt>
+                  <dd>
+                    {imageResult.card.dueAt
+                      ? new Date(imageResult.card.dueAt).toLocaleString("en-GB")
+                      : "No stated deadline found"}
+                  </dd>
+                </div>
+                <div className="detail">
+                  <dt>Evidence</dt>
+                  <dd>{imageResult.card.proofLink?.evidenceQuotes.join(" · ")}</dd>
+                </div>
+              </dl>
+              <div className="actions">
+                <button className="button primary" type="button" onClick={confirmImage}>
+                  Transcription is correct — save action
+                </button>
+                <button className="button ghost" type="button" onClick={clearPhoto}>
+                  Discard
+                </button>
+              </div>
+            </section>
+          </>
+        ) : (
+          <section className="card photo-escalation" role="alert">
+            <h2>No supporting source found.</h2>
+            <p>The proposed card contained evidence that was absent from the transcription.</p>
+            <button className="button ghost" type="button" onClick={clearPhoto}>
+              Discard
+            </button>
+          </section>
+        )
       ) : null}
     </section>
   );

@@ -17,7 +17,9 @@ function ActionRow({ action }: { action: ActionItem }) {
     <li className="card inbox-item">
       <div className="inbox-badges">
         <span className={`status due-${state}`}>{dueLabel(action)}</span>
-        {action.proofLink?.allRequiredClaimsVerified ? (
+        {action.source?.kind === "image" ? (
+          <span className="status review">Read from photo — human-checked transcription</span>
+        ) : action.proofLink?.allRequiredClaimsVerified ? (
           <span className="status source-status">Source verified</span>
         ) : (
           <span className="status">Human confirmed</span>

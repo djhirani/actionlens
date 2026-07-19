@@ -184,3 +184,19 @@ The repository is private and Vercel Git integration could not connect because t
 - `npm audit --audit-level=moderate` — the two documented Next.js-transitive PostCSS advisories remain; the unsafe breaking force-fix was not applied.
 - Vercel deployment `dpl_FqcEms8E9pAdGFHSQZw6H8MpkVju` — READY at `https://actionlens-five.vercel.app`.
 - `npm run smoke:live` against production — 3/3 complete synthetic flows passed; API sanitisation passed.
+
+## 2026-07-19 — Feature-flagged photo input
+
+- Added a separate `/api/analyze-image` GPT-5.6 vision route and left the existing PDF extraction, analysis route, claim gate, and confirmation code unchanged.
+- Added JPG, PNG, HEIC, and WebP selection behind `PHOTO_INPUT_ENABLED` (default enabled), with the original PDF-only markup and accept list retained when disabled.
+- Added deterministic whitespace-normalised evidence-quote checks against the model transcription. Unsupported quotes produce the existing “No supporting source found” refusal; low-confidence reads produce only the clearer-photo escalation.
+- Added the mandatory side-by-side photo/transcription confirmation, explicit no-original-text-layer badge, photo-specific confirmation label, local image-source persistence, Inbox badge, and privacy disclosure.
+- Added focused tests for passing/failing transcription quote checks, low-confidence refusal, unsupported evidence refusal, and the disabled feature flag.
+
+### Verification
+
+- `npm run format:check` — passed.
+- `npm run lint` — passed with zero warnings.
+- `npm run typecheck` — passed.
+- `npm test` — passed: 17 files, 59 tests.
+- The named photo fixtures were not present in `tests/fixtures/` in this workspace, so live fixture acceptance could not be run. The available directory contained only `03_hospital_letter_conflicting_dates.pdf` and `05_tenancy_letter_hallucination_bait.pdf`; automated synthetic photo-path coverage was run instead.

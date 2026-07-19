@@ -28,7 +28,7 @@ export const ActionItemSchema = ModelActionDraftSchema.extend({
   sourceText: z.string().min(1).max(2000),
   source: z
     .object({
-      kind: z.enum(["typed_text", "pdf"]),
+      kind: z.enum(["typed_text", "pdf", "image"]),
       displayName: z.string().max(255).nullable(),
       sourceHash: z
         .string()
@@ -113,6 +113,30 @@ export const AnalyzeDocumentRequestSchema = z
     if (characters > 50_000)
       context.addIssue({ code: "custom", message: "Extracted text exceeds 50,000 characters" });
   });
+
+export const ReadConfidenceSchema = z.enum(["high", "medium", "low"]);
+export const ModelImageCardSchema = ModelActionDraftSchema.extend({
+  completionCriteria: z.array(z.string().min(1).max(300)).max(10),
+  evidenceQuotes: z.array(z.string().min(1).max(2000)).min(1).max(25)
+});
+export const ModelImageAnalysisSchema = z.object({
+  transcription: z.string().min(1).max(50_000),
+  readConfidence: ReadConfidenceSchema,
+  card: ModelImageCardSchema
+});
+export const AnalyzeImageRequestSchema = z.object({
+  displayName: z.string().min(1).max(255),
+  sourceHash: z.string().regex(/^[a-f0-9]{64}$/),
+  mimeType: z.enum(["image/jpeg", "image/png", "image/heic", "image/webp"]),
+  imageDataUrl: z.string().max(14_000_000),
+  timeContext: TimeContextSchema
+});
+export const ImageAnalysisResultSchema = z.object({
+  transcription: z.string(),
+  readConfidence: ReadConfidenceSchema,
+  card: ActionItemSchema.nullable(),
+  rejectionReason: z.string().nullable()
+});
 export const EvidenceMatchSchema = z.object({
   kind: DocumentClaimKindSchema,
   value: z.string(),
@@ -230,6 +254,8 @@ export type InterpretRequest = z.infer<typeof InterpretRequestSchema>;
 export type SourcePage = z.infer<typeof SourcePageSchema>;
 export type ModelDocumentProposal = z.infer<typeof ModelDocumentProposalSchema>;
 export type AnalyzeDocumentRequest = z.infer<typeof AnalyzeDocumentRequestSchema>;
+export type AnalyzeImageRequest = z.infer<typeof AnalyzeImageRequestSchema>;
+export type ImageAnalysisResult = z.infer<typeof ImageAnalysisResultSchema>;
 export type DocumentAnalysisResult = z.infer<typeof DocumentAnalysisResultSchema>;
 export type CompletionCriterion = z.infer<typeof ActionItemSchema>["completionCriteria"][number];
 export type ModelCompletionProposal = z.infer<typeof ModelCompletionProposalSchema>;

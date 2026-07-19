@@ -727,6 +727,37 @@ mark {
   color: var(--muted);
 }
 
+.photo-confirmation {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.photo-source img {
+  display: block;
+  width: 100%;
+  max-height: 38rem;
+  border-radius: 12px;
+  object-fit: contain;
+  background: var(--paper);
+}
+
+.photo-transcription .source-text {
+  max-height: 38rem;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+
+.photo-card,
+.photo-escalation {
+  margin-top: 1rem;
+}
+
+.photo-source-badge {
+  display: inline-block;
+  white-space: normal;
+}
+
 .inbox-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -838,7 +869,8 @@ mark {
   }
 
   .workspace,
-  .judge-path {
+  .judge-path,
+  .photo-confirmation {
     grid-template-columns: 1fr;
   }
 
