@@ -49,8 +49,13 @@ test("the complete built-in judge path is repeatable three times", async ({ page
   test.setTimeout(90_000);
   for (let run = 1; run <= 3; run += 1) {
     await page.goto("/");
-    await page.getByRole("button", { name: "Reset demo data" }).click();
-    await expect(page.getByRole("status")).toContainText("Synthetic demo action");
+    await page.getByRole("button", { name: "Reset all local data" }).click();
+    await expect(page.getByRole("status")).toContainText("All local actions");
+    await page.goto("/inbox");
+    await expect(page.getByRole("tab", { name: /Today\s*0/ })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /Upcoming\s*0/ })).toBeVisible();
+    await expect(page.getByRole("tab", { name: /Completed\s*0/ })).toBeVisible();
+    await page.goto("/");
 
     await page.getByRole("button", { name: "Try the “No deadline stated” demo" }).click();
     await expect(page.getByRole("heading", { name: "No required action found" })).toBeVisible();

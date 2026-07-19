@@ -103,7 +103,7 @@ No personal document or external account is required.
 5. Select **Try weak evidence** and show `Not verified` with **Mark complete** disabled.
 6. Select **Try strong evidence**, show the verified quote, then choose **Mark complete**.
 7. Open the Action Inbox and show the action remains visible under Completed.
-8. Use **Reset demo data** before another run.
+8. Use **Reset all local data** before another run.
 
 The automated browser suite repeats this complete judge path three consecutive times.
 

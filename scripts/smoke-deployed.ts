@@ -15,7 +15,7 @@ async function main() {
       const context = await browser.newContext();
       const page = await context.newPage();
       await page.goto(baseURL, { waitUntil: "networkidle" });
-      await page.getByRole("button", { name: "Reset demo data" }).click();
+      await page.getByRole("button", { name: "Reset all local data" }).click();
       await page.getByRole("button", { name: "Try the “No deadline stated” demo" }).click();
       await page.getByRole("heading", { name: "No required action found" }).waitFor();
       await page.getByText("No reminder created.").waitFor();

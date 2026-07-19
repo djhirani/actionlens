@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { actionRepository } from "@/lib/db";
-import { PROOF_DEMO_ACTION } from "@/lib/demo/proof-fixtures";
 
 export function DemoReset({ reloadAfter = false }: { reloadAfter?: boolean }) {
   const [state, setState] = useState<"idle" | "busy" | "done" | "error">("idle");
@@ -9,7 +8,7 @@ export function DemoReset({ reloadAfter = false }: { reloadAfter?: boolean }) {
   async function reset() {
     setState("busy");
     try {
-      await actionRepository.deleteById(PROOF_DEMO_ACTION.id);
+      await actionRepository.clear();
       if (reloadAfter) {
         window.location.reload();
         return;
@@ -23,16 +22,16 @@ export function DemoReset({ reloadAfter = false }: { reloadAfter?: boolean }) {
   return (
     <div className="demo-reset">
       <button className="button ghost" type="button" disabled={state === "busy"} onClick={reset}>
-        {state === "busy" ? "Resetting demo…" : "Reset demo data"}
+        {state === "busy" ? "Resetting local data…" : "Reset all local data"}
       </button>
       {state === "done" ? (
         <span className="reset-status" role="status">
-          Synthetic demo action and proof history cleared.
+          All local actions and proof history cleared.
         </span>
       ) : null}
       {state === "error" ? (
         <span className="reset-error" role="alert">
-          Demo data could not be reset.
+          Local data could not be reset.
         </span>
       ) : null}
     </div>

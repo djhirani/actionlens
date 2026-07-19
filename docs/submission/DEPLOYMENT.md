@@ -27,7 +27,7 @@ Run against the production URL:
 3. Run the source-verified fixture and confirm the action.
 4. Open `/proof-demo`; run weak then strong evidence and select Mark complete.
 5. Open `/inbox`; confirm the action is visible under Completed.
-6. Reset demo data.
+6. Reset all local data.
 7. Repeat the complete path three times in a clean browser profile.
 8. Confirm `/api/interpret-text` returns a sanitised validation error for an empty JSON request, not an SDK error or secret.
 9. Test at desktop and mobile widths.

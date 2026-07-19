@@ -77,7 +77,15 @@ export const actionRepository = {
     return getDatabase().actions.count();
   },
   async clear() {
-    await getDatabase().actions.clear();
+    await getDatabase().transaction(
+      "rw",
+      getDatabase().actions,
+      getDatabase().completionChecks,
+      async () => {
+        await getDatabase().completionChecks.clear();
+        await getDatabase().actions.clear();
+      }
+    );
   },
   async deleteById(id: string) {
     await getDatabase().transaction(

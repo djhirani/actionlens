@@ -60,4 +60,19 @@ describe("human closure and completion persistence", () => {
     expect(await actionRepository.getById(PROOF_DEMO_ACTION.id)).toBeNull();
     expect(await completionRepository.listForAction(PROOF_DEMO_ACTION.id)).toHaveLength(0);
   });
+  it("resets every action and completion check, then accepts a fresh action", async () => {
+    await actionRepository.saveConfirmed({
+      ...PROOF_DEMO_ACTION,
+      id: "7bf1af4e-7180-4e05-94d3-804947782a44",
+      title: "Second confirmed action"
+    });
+    await completionRepository.savePending(getStrongProofResult(), false);
+
+    await actionRepository.clear();
+
+    expect(await actionRepository.listInbox()).toHaveLength(0);
+    expect(await completionRepository.listForAction(PROOF_DEMO_ACTION.id)).toHaveLength(0);
+    await actionRepository.saveConfirmed(PROOF_DEMO_ACTION);
+    expect(await actionRepository.listInbox()).toHaveLength(1);
+  });
 });

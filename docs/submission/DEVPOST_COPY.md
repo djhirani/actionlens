@@ -59,7 +59,7 @@ ActionLens is demonstration software, not professional advice. It supports text-
 
 ## Testing instructions
 
-1. Reset demo data on the home page.
+1. Reset all local data on the home page.
 2. Run **Try the “No deadline stated” demo** and confirm no 30 July deadline is created.
 3. Run **Try a source-verified action** and inspect the Evidence Bridge.
 4. Confirm the synthetic action.
