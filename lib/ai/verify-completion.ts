@@ -14,7 +14,6 @@ export async function verifyCompletion(input: VerifyCompletionRequest) {
       completionCriteria: input.action.completionCriteria,
       originalVerifiedQuotes: input.action.proofLink?.evidenceQuotes ?? [],
       completionEvidencePages: input.pages,
-      timeContext: input.timeContext,
       requiredDisclaimer:
         "ActionLens checks whether the submitted evidence appears to match the requirement. It cannot confirm official acceptance."
     }),

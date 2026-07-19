@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { DOCUMENT_ANALYSIS_INSTRUCTIONS } from "@/lib/ai/instructions";
+import {
+  COMPLETION_VERIFICATION_INSTRUCTIONS,
+  DOCUMENT_ANALYSIS_INSTRUCTIONS
+} from "@/lib/ai/instructions";
 import { matchEvidence } from "@/lib/documents/evidence-match";
 import { readBoundedJson, RequestBodyError } from "@/lib/http/bounded-json";
 import { applyClaimGate } from "@/lib/proof/claim-gate";
@@ -63,5 +66,19 @@ describe("security boundaries", () => {
     await expect(readBoundedJson(oversized, 20)).rejects.toBeInstanceOf(RequestBodyError);
     const malformed = new Request("https://actionlens.test/api", { method: "POST", body: "{" });
     await expect(readBoundedJson(malformed, 20)).rejects.toBeInstanceOf(RequestBodyError);
+  });
+});
+
+describe("completion verification boundaries", () => {
+  it("limits evaluation to the completion criteria shown to the user", () => {
+    expect(COMPLETION_VERIFICATION_INSTRUCTIONS).toContain(
+      "Use only the supplied completionCriteria as evaluation criteria"
+    );
+    expect(COMPLETION_VERIFICATION_INSTRUCTIONS).toContain(
+      "Do not introduce checks or uncertainty about dates"
+    );
+    expect(COMPLETION_VERIFICATION_INSTRUCTIONS).toContain(
+      "Incidental details outside the supplied criteria must not downgrade the result"
+    );
   });
 });
