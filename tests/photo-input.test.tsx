@@ -1,6 +1,7 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DocumentCheck } from "@/components/document-check";
+import { actionRepository, getDatabase, resetDatabaseForTests } from "@/lib/db";
 import { verifyImageEvidenceQuotes } from "@/lib/images/verify-quotes";
 
 vi.mock("@/lib/images/input", () => ({
@@ -8,6 +9,10 @@ vi.mock("@/lib/images/input", () => ({
   validateImageFile: () => undefined,
   hashFile: async () => "a".repeat(64),
   fileToDataUrl: async () => "data:image/png;base64,cGhvdG8="
+}));
+
+vi.mock("@/components/evidence-bridge", () => ({
+  EvidenceBridge: () => <div data-testid="evidence-bridge" />
 }));
 
 describe("photo evidence verification", () => {
@@ -27,8 +32,10 @@ describe("photo evidence verification", () => {
 });
 
 describe("photo confirmation UI", () => {
-  afterEach(() => {
+  afterEach(async () => {
     cleanup();
+    await getDatabase().delete();
+    resetDatabaseForTests();
     vi.unstubAllGlobals();
   });
 
@@ -98,5 +105,27 @@ describe("photo confirmation UI", () => {
     );
     expect(screen.getByText("Selected: screenshot.png")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Analyse document" })).toBeEnabled();
+  });
+
+  it("accepts a fresh upload after a proof-linked action is confirmed", async () => {
+    render(<DocumentCheck />);
+    fireEvent.click(screen.getByRole("button", { name: "Try a source-verified action" }));
+    fireEvent.click(screen.getByRole("button", { name: "Confirm Proof-Linked Action" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Proof-Linked Action confirmed and saved locally."
+    );
+    await waitFor(async () => expect(await actionRepository.count()).toBe(1));
+    expect((await actionRepository.listConfirmed())[0]?.status).toBe("confirmed");
+
+    const input = screen.getByLabelText("Text-based PDF");
+    expect(input).toBeEnabled();
+    fireEvent.change(input, {
+      target: { files: [new File(["fresh"], "fresh-upload.pdf", { type: "application/pdf" })] }
+    });
+
+    expect(screen.getByText("Selected: fresh-upload.pdf")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Analyse document" })).toBeEnabled();
+    expect(screen.queryByText("Proof-Linked Action confirmed and saved locally.")).toBeNull();
   });
 });

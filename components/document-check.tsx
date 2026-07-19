@@ -33,7 +33,8 @@ export function DocumentCheck({
   const [result, setResult] = useState<DocumentAnalysisResult | null>(null);
   const [imageResult, setImageResult] = useState<ImageAnalysisResult | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
-  const [state, setState] = useState<"idle" | "extracting" | "analysing" | "saved">("idle");
+  const [state, setState] = useState<"idle" | "extracting" | "analysing">("idle");
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scamAssessment, setScamAssessment] = useState<ScamAssessment>(NO_SCAM_RISK);
 
@@ -50,6 +51,7 @@ export function DocumentCheck({
     const kind = file && isSupportedImage(file) ? "image" : "pdf";
     setFileKind(kind);
     setPhotoUrl(file && kind === "image" ? URL.createObjectURL(file) : null);
+    setSaved(false);
     setError(null);
   }
 
@@ -157,6 +159,7 @@ export function DocumentCheck({
   function loadDemo(kind: "bait" | "verified") {
     setError(null);
     setScamAssessment(NO_SCAM_RISK);
+    setSaved(false);
     setFileName(null);
     setResult(
       (kind === "bait"
@@ -221,14 +224,14 @@ export function DocumentCheck({
     });
     await actionRepository.saveConfirmed(action);
     setResult(null);
-    setState("saved");
+    setSaved(true);
   }
 
   async function confirmImage() {
     if (!imageResult?.card) return;
     await actionRepository.saveConfirmed(imageResult.card);
     clearPhoto();
-    setState("saved");
+    setSaved(true);
   }
 
   return (
@@ -350,7 +353,7 @@ export function DocumentCheck({
             {error}
           </p>
         ) : null}
-        {state === "saved" ? (
+        {saved ? (
           <p className="success" role="status">
             Proof-Linked Action confirmed and saved locally.
           </p>
