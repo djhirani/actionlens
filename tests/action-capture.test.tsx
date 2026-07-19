@@ -36,6 +36,26 @@ describe("human confirmation flow", () => {
     await waitFor(async () => expect(await actionRepository.count()).toBe(1));
     expect(screen.getByRole("status")).toHaveTextContent("saved locally");
   });
+  it("records explicit confirmation as completion of human review", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () =>
+        actionFixture({
+          uncertainty: {
+            requiresHumanReview: true,
+            reasons: ["The supplied time was ambiguous."],
+            clarificationQuestion: "Which time did you mean?"
+          }
+        })
+    } as Response);
+    await prepare();
+    fireEvent.click(screen.getByRole("button", { name: "Confirm and save" }));
+
+    await waitFor(async () => expect(await actionRepository.count()).toBe(1));
+    const [saved] = await actionRepository.listConfirmed();
+    expect(saved?.uncertainty.requiresHumanReview).toBe(false);
+    expect(saved?.uncertainty.reasons).toEqual(["The supplied time was ambiguous."]);
+  });
   it("discard does not save", async () => {
     await prepare();
     fireEvent.click(screen.getByRole("button", { name: "Discard" }));

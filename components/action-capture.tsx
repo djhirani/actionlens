@@ -50,7 +50,10 @@ export function ActionCapture({ scamCheckEnabled = false }: { scamCheckEnabled?:
   async function confirm() {
     if (!draft) return;
     try {
-      await actionRepository.saveConfirmed(draft);
+      await actionRepository.saveConfirmed({
+        ...draft,
+        uncertainty: { ...draft.uncertainty, requiresHumanReview: false }
+      });
       setDraft(null);
       setInstruction("");
       setEditing(false);
